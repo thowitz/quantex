@@ -63,3 +63,12 @@ class BlockChain:
             return False
 
         return True
+
+    def newData(self, sender, recipient, quantity):
+        self.currentData.append(
+            {"sender": sender, "recipient": recipient, "quantity": quantity}
+        )
+        return True
+    
+    def proofOfStake():
+        pass
