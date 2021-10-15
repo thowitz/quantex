@@ -1,23 +1,24 @@
-import hashlib
+from Crypto.Hash import SHA3_256
 import time
 
+
 class Block:
-    def __init__(self, index, proofNumber, previousHash, data, timestamp=None):
-        self.index = index
-        self.proofNumber = proofNumber
+    def __init__(self, previousHash, transaction, timestamp=None):
         self.previousHash = previousHash
-        self.data = data
+        self.transaction = transaction
         self.timestamp = timestamp or time.time()
 
     @property
     def calculateHash(self):
-        blockOfString = "{}{}{}{}{}".format(
-            self.index, self.proofNumber, self.previousHash, self.data, self.timestamp
+        string = "{}{}{}{}{}".format(
+            self.previousHash, self.transaction, self.timestamp
         )
 
-        return hashlib.sha3_256(blockOfString.encode()).hexdigest()
+        hash = SHA3_256.new()
+        hash.update(string.encode())
+        hexHash = hash.hexdigest()
 
-    def __repr__(self):
-        return "{} - {} - {} - {} - {}".format(
-            self.index, self.proofNumber, self.previousHash, self.data, self.timestamp
-        )
+        print(string)
+        print(hexHash)
+
+        return hexHash

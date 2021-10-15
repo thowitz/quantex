@@ -1,26 +1,20 @@
 from block import Block
+from transaction import Transaction
+
 
 class BlockChain:
     def __init__(self):
         self.chain = []
-        self.currentData = []
-        self.nodes = set()
-        self.constructGenesis()
+        self.chain.append(Block(None, Transaction(100, "genesis", "tim")))
 
-    def constructGenesis(self):
-        self.constructBlock(proofNumber=0, previousHash=0)
+    @property
+    def lastBlock(self):
+        return self.chain[self.chain.len() - 1]
 
-    def constructBlock(self, proofNumber, previousHash):
-        block = Block(
-            index=len(self.chain),
-            proofNumber=proofNumber,
-            previousHash=previousHash,
-            data=self.currentData,
-        )
-        self.currendData = []
+    def constructBlock(self, transaction, senderPublicKey, signature):
+        newBlock = Block(self.lastBLock.hash, transaction)
 
-        self.chain.append(block)
-        return block
+        self.chain.append(newBlock)
 
     @staticmethod
     def checkValidity(block, previousBlock):
