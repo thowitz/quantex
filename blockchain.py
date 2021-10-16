@@ -1,3 +1,5 @@
+from Crypto.Hash import SHA3_256
+from Crypto.Signature import pss
 from block import Block
 from transaction import Transaction
 
@@ -9,12 +11,21 @@ class BlockChain:
 
     @property
     def lastBlock(self):
-        return self.chain[self.chain.len() - 1]
+        return self.chain[-1]
 
     def constructBlock(self, transaction, senderPublicKey, signature):
-        newBlock = Block(self.lastBLock.hash, transaction)
+        hash = SHA3_256.new(transaction)
+        verifier = pss.new(senderPublicKey)
 
-        self.chain.append(newBlock)
+        try:
+            verifier.verify(hash, signature)
+            isValid = True
+        except (ValueError, TypeError):
+            isValid = False
+
+        if isValid:
+            newBlock = Block(self.lastBLock.hash, transaction)
+            self.chain.append(newBlock)
 
     @staticmethod
     def checkValidity(block, previousBlock):
