@@ -7,25 +7,29 @@ from transaction import Transaction
 class BlockChain:
     def __init__(self):
         self.chain = []
-        self.chain.append(Block(None, Transaction(100, "genesis", "tim")))
+        self.chain.append(Block(None, [Transaction(100, "genesis", "tim")]))
 
     @property
     def lastBlock(self):
         return self.chain[-1]
 
-    def constructBlock(self, transaction, senderPublicKey, signature):
-        hash = SHA3_256.new(transaction)
-        verifier = pss.new(senderPublicKey)
+    def appendBlock(self, transactionList, signature):
+        for transaction in transactionList:
+            hash = SHA3_256.new(transaction)
+            verifier = pss.new(transaction.senderPublicKey)
 
-        try:
-            verifier.verify(hash, signature)
-            isValid = True
-        except (ValueError, TypeError):
-            isValid = False
+            try:
+                verifier.verify(hash, signature)
+            except (ValueError, TypeError):
+                isValid = False
+                break
 
         if isValid:
-            newBlock = Block(self.lastBLock.hash, transaction)
+            newBlock = Block(self.lastBLock.hash, transactionList)
             self.chain.append(newBlock)
+        elif not isValid:
+            # burn some of the miner's stake, or maybe give it to contributors or a charity or something idk
+            pass
 
     @staticmethod
     def checkValidity(block, previousBlock):
@@ -43,12 +47,6 @@ class BlockChain:
         elif block.timestamp <= previousBlock.timestamp:
             return False
 
-        return True
-
-    def newData(self, sender, recipient, quantity):
-        self.currentData.append(
-            {"sender": sender, "recipient": recipient, "quantity": quantity}
-        )
         return True
 
     def proofOfStake():
