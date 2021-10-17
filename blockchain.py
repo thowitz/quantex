@@ -18,8 +18,6 @@ class BlockChain:
 
     @staticmethod
     def validateTransactions(transactionList):
-        isValid = True
-
         for transaction in transactionList:
             hash = SHA3_256.new(transaction)
             verifier = pss.new(transaction.senderPublicKey)
@@ -27,31 +25,24 @@ class BlockChain:
             try:
                 verifier.verify(hash, transaction.signature)
             except (ValueError, TypeError):
-                isValid = False
-                break
+                return False
 
-        if isValid:
-            return True
-        elif not isValid:
-            return False
+        return True
 
     @staticmethod
-    def checkValidity(block, previousBlock):
-        if previousBlock.index + 1 != block.index:
-            return False
-
-        elif previousBlock.calculateHash != block.previousHash:
-            return False
-
-        elif not BlockChain.verifyingProof(
-            block.proofNumber, previousBlock.proofNumber
-        ):
+    def validateBlocks(block, previousBlock):
+        if block.previousBlockHash != previousBlock.blockHash:
             return False
 
         elif block.timestamp <= previousBlock.timestamp:
             return False
 
         return True
+
+    def validateChain(self):
+        for block in self.chain:
+            if not self.validateTransactions(block.transactionList):
+                return False
 
     def proofOfStake():
         pass
