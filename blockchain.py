@@ -33,6 +33,9 @@ class BlockChain:
     def validateBlocks(block, previousBlock):
         if block.previousBlockHash != previousBlock.blockHash:
             return False
+        
+        elif block.index <= previousBlock.index:
+            return False
 
         elif block.timestamp <= previousBlock.timestamp:
             return False
@@ -41,8 +44,13 @@ class BlockChain:
 
     def validateChain(self):
         for block in self.chain:
-            if not self.validateTransactions(block.transactionList):
-                return False
+            if block.index != 0:
+                if not self.validateBlocks(block, self.chain[block.index - 1]):
+                    return False
+                if not self.validateTransactions(block.transactionList):
+                    return False
+                
+        return True
 
     def proofOfStake():
         pass
