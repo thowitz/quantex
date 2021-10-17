@@ -13,23 +13,27 @@ class BlockChain:
     def lastBlock(self):
         return self.chain[-1]
 
-    def appendBlock(self, transactionList, signature):
+    def appendBlock(self, newBlock):
+        self.chain.append(newBlock)
+
+    @staticmethod
+    def validateTransactions(transactionList):
+        isValid = True
+
         for transaction in transactionList:
             hash = SHA3_256.new(transaction)
             verifier = pss.new(transaction.senderPublicKey)
 
             try:
-                verifier.verify(hash, signature)
+                verifier.verify(hash, transaction.signature)
             except (ValueError, TypeError):
                 isValid = False
                 break
 
         if isValid:
-            newBlock = Block(self.lastBLock.hash, transactionList)
-            self.chain.append(newBlock)
+            return True
         elif not isValid:
-            # burn some of the miner's stake, or maybe give it to contributors or a charity or something idk
-            pass
+            return False
 
     @staticmethod
     def checkValidity(block, previousBlock):
