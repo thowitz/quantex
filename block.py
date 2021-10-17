@@ -3,22 +3,19 @@ import time
 
 
 class Block:
-    def __init__(self, previousHash, transaction, timestamp=None):
+    def __init__(self, previousHash, transactionList):
         self.previousHash = previousHash
-        self.transaction = transaction
-        self.timestamp = timestamp or time.time()
+        self.transactionList = transactionList
+        
+        self.blockData = "{}-{}-{}".format(self.previousHash, self.transactionList, time.time())
 
     @property
-    def calculateHash(self):
-        string = "{}{}{}{}{}".format(
-            self.previousHash, self.transaction, self.timestamp
-        )
-
+    def blockHash(self):
         hash = SHA3_256.new()
-        hash.update(string.encode())
+        hash.update(self.blockData.encode())
         hexHash = hash.hexdigest()
 
-        print(string)
+        print(self.blockData)
         print(hexHash)
 
         return hexHash
