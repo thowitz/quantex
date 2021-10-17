@@ -3,11 +3,15 @@ import time
 
 
 class Block:
-    def __init__(self, previousHash, transactionList):
-        self.previousHash = previousHash
+    def __init__(self, previousBlockHash, transactionList):
+        self.previousBlockHash = previousBlockHash
         self.transactionList = transactionList
-        
-        self.blockData = "{}-{}-{}".format(self.previousHash, self.transactionList, time.time())
+
+        self.blockData = {
+            "previousBlockHash": self.previousBlockHash,
+            "transactionList": self.transactionList,
+            "timestamp": time.time(),
+        }
 
     @property
     def blockHash(self):
