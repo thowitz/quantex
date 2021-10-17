@@ -7,7 +7,7 @@ from transaction import Transaction
 class BlockChain:
     def __init__(self):
         self.chain = []
-        self.chain.append(Block(None, [Transaction(100, "genesis", "tim")]))
+        self.chain.append(Block(0, None, [Transaction(100, "genesis", "tim")]))
 
     @property
     def lastBlock(self):
@@ -33,7 +33,7 @@ class BlockChain:
     def validateBlocks(block, previousBlock):
         if block.previousBlockHash != previousBlock.blockHash:
             return False
-        
+
         elif block.index <= previousBlock.index:
             return False
 
@@ -49,7 +49,7 @@ class BlockChain:
                     return False
                 if not self.validateTransactions(block.transactionList):
                     return False
-                
+
         return True
 
     def proofOfStake():
