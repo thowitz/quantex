@@ -8,19 +8,24 @@ class Transaction:
         self.senderPublicKey = senderPublicKey
         self.recipientPublicKey = recipientPublicKey
 
-    def createTransaction(self):
-        return {
+        self.rawTransactionData = {
             "amount": self.amount,
             "senderPublicKey": self.senderPublicKey,
             "recipientPublicKey": self.recipientPublicKey,
         }
 
-    @staticmethod
-    def signTransaction(transaction, privateKey):
-        hash = SHA3_256.new(transaction)
+    def signTransaction(self, privateKey):
+        hash = SHA3_256.new(self.rawTransactionData)
         signature = pss.new(privateKey).sign(hash)
 
-        return signature
+        self.signature = signature
+
+    @property
+    def transactionData(self):
+        return {
+            "transaction": self.rawTransactionData,
+            "signature": self.signature,
+        }
 
     @staticmethod
     def validateTransactions(transactionList):
