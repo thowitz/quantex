@@ -1,5 +1,6 @@
-from Crypto.Hash import SHA3_256
-from Crypto.Signature import pss
+from hashlib import sha3_256
+from ecdsa import SigningKey, VerifyingKey, SECP256k1, BadSignatureError
+import json
 
 
 class Transaction:
@@ -15,13 +16,20 @@ class Transaction:
         }
 
     def signTransaction(self, privateKey):
-        hash = SHA3_256.new(self.rawTransactionData)
-        signature = pss.new(privateKey).sign(hash)
+        signingKey = SigningKey.from_string(
+            bytearray.fromhex(privateKey), SECP256k1, sha3_256
+        )
+        signature = signingKey.sign(
+            json.dumps(self.rawTransactionData).encode("utf-8")
+        ).hex()
 
         self.signature = signature
 
     @property
     def transactionData(self):
+        if not self.signature:
+            return False
+
         return {
             "transaction": self.rawTransactionData,
             "signature": self.signature,
@@ -30,12 +38,11 @@ class Transaction:
     @staticmethod
     def validateTransactions(transactionList):
         for transaction in transactionList:
-            hash = SHA3_256.new(transaction)
-            verifier = pss.new(transaction.senderPublicKey)
+            verifyingKey = VerifyingKey.from_string(transaction.senderPublicKey)
 
             try:
-                verifier.verify(hash, transaction.signature)
-            except (ValueError, TypeError):
+                verifyingKey.verify(transaction.signature, transaction, sha3_256)
+            except (ValueError, TypeError, BadSignatureError):
                 return False
 
         return True

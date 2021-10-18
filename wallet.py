@@ -1,27 +1,25 @@
-from Crypto.PublicKey import RSA
+from hashlib import sha3_256
+from ecdsa import SigningKey, SECP256k1
 from transaction import Transaction
 
 
 class Wallet:
-    def __init__(self, publicKey, privateKey):
+    def __init__(self, publicKey=None, privateKey=None):
+        if not publicKey or not privateKey:
+            signingKey = SigningKey.generate(SECP256k1, hashfunc=sha3_256)
+            verifyingKey = signingKey.verifying_key
+
+            publicKey = verifyingKey.to_string("compressed").hex()
+            privateKey = signingKey.to_string().hex()
+
         self.publicKey = publicKey
         self.privateKey = privateKey
-
-        key = RSA.generate(2048)
-        keyPair = key.export_key("PEM")
-
-        publicKey = keyPair.publicKey
-        privateKey = keyPair.privateKey
-
-        print(keyPair)
-        print(publicKey)
-        print(privateKey)
 
     def transferCoins(self, amount, recipientPublicKey):
         transaction = Transaction(amount, self.publicKey, recipientPublicKey)
 
-        newTransaction = transaction.createTransaction()
+        transaction.signTransaction(self.privateKey)
 
-        signature = transaction.signTransaction(newTransaction, self.privateKey)
+        newTransaction = transaction.transactionData
 
-        return newTransaction, signature
+        return newTransaction
