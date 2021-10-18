@@ -18,11 +18,10 @@ class BlockChain:
     def __init__(self, instanceExists=False):
         if not instanceExists:
             raise RuntimeError(
-                f"{self.__class__.__name__} is a singleton use the getInstance class method."
+                f"{self.__class__.__name__} is a singleton, use the getInstance class method."
             )
 
         self.chain = []
-        self.chain.append(Block(0, None, [Transaction(100, "genesis", "tim")]))
 
     @property
     def lastBlock(self):
