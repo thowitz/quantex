@@ -25,3 +25,16 @@ class Block:
         print(hexHash)
 
         return hexHash
+
+    @staticmethod
+    def validateBlocks(block, previousBlock):
+        if block.previousBlockHash != previousBlock.blockHash:
+            return False
+
+        elif block.index <= previousBlock.index:
+            return False
+
+        elif block.timestamp <= previousBlock.timestamp:
+            return False
+
+        return True
