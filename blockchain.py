@@ -1,5 +1,6 @@
 from block import Block
 from transaction import Transaction
+from wallet import Wallet
 
 
 class BlockChain:
@@ -22,6 +23,14 @@ class BlockChain:
             )
 
         self.chain = []
+
+    def createGenesis(self):
+        wallet = Wallet()
+
+        newTransaction = Transaction(100, "genesis", "tim")
+        newTransaction.signTransaction(wallet.privateKey)
+
+        self.appendBlock(Block(0, None, [newTransaction.transactionData]).blockData)
 
     @property
     def lastBlock(self):
