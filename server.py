@@ -17,8 +17,10 @@ savedChain = json.load(savedChainFile)
 
 if savedChain:
     blockchain.chain = savedChain
+elif not savedChain:
+    blockchain.createGenesis()
 
-blockchain.createGenesis()
+blockchain.resolveConflicts()
 
 app = Flask(__name__)
 app.register_blueprint(views, url_prefix="/")

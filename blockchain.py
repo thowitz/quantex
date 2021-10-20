@@ -1,6 +1,9 @@
 from block import Block
 from transaction import Transaction
 from wallet import Wallet
+from node import Node
+import requests
+import json
 
 
 class BlockChain:
@@ -54,6 +57,30 @@ class BlockChain:
         # todo notify other validators
 
         return True
+
+    def resolveConflicts(self):
+        node = Node.getInstance()
+
+        for node in node.nodes:
+            try:
+                response = requests.get(f"http://{node}/chain")
+            except requests.exceptions.RequestException as error:
+                return error
+
+            if response.status_code == 200:
+                prospectiveNewChain = response.json()
+
+                if len(prospectiveNewChain) > len(self.chain) and self.validateChain(
+                    prospectiveNewChain
+                ):
+                    self.chain = prospectiveNewChain
+
+                    savedChainFile = open("chain.json", "w")
+                    json.dump(self.chain, savedChainFile, indent=4)
+
+                    return True
+
+        return False
 
     def validateChain(self):
         for block in self.chain:
