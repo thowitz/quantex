@@ -28,6 +28,15 @@ class Block:
 
     @staticmethod
     def validateBlocks(block, previousBlock):
+        if type(block.index) != int:
+            return False
+        elif type(block.previousBlockHash) != str:
+            return False
+        elif type(block.transactionList) != list:
+            return False
+        elif type(block.timestamp) != float:
+            return False
+
         if block.previousBlockHash != previousBlock.blockHash:
             return False
 
