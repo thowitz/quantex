@@ -25,12 +25,14 @@ class BlockChain:
         self.chain = []
 
     def createGenesis(self):
+        # todo proper placeholder private key
+
         wallet = Wallet.getInstance()
 
         newTransaction = Transaction(100, "genesis", "tim")
         newTransaction.signTransaction(wallet.privateKey)
 
-        self.appendBlock(Block(0, None, [newTransaction.transactionData]).blockData)
+        self.appendBlock(Block(0, None, [newTransaction.signedTransaction]).blockData)
 
     @property
     def lastBlock(self):
