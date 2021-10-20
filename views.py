@@ -24,15 +24,4 @@ def returnNodes():
 
 @views.route("/newBlock", methods=["POST"])
 def newBlock():
-    # todo check for correct validator public key
-
-    if not Block.validateBlocks(newBlock, blockchain.chain[-1]):
-        return False
-    elif not Transaction.validateTransactions(newBlock.transactionList):
-        return False
-
-    blockchain.appendBlock(newBlock)
-
-    # todo notify other validators
-
-    return True
+    return blockchain.processProspectiveBlock()

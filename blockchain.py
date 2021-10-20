@@ -39,6 +39,20 @@ class BlockChain:
     def appendBlock(self, newBlock):
         self.chain.append(newBlock)
 
+    def processProspectiveBlock(self, prospectiveNewBlock):
+        # todo check for correct validator public key
+
+        if not Block.validateBlocks(prospectiveNewBlock, self.chain[-1]):
+            return False
+        elif not Transaction.validateTransactions(prospectiveNewBlock.transactionList):
+            return False
+
+        self.appendBlock(prospectiveNewBlock)
+
+        # todo notify other validators
+
+        return True
+
     def validateChain(self):
         for block in self.chain:
             if block.index != 0:
