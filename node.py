@@ -17,5 +17,9 @@ class Node:
                 f"{self.__class__.__name__} is a singleton, use the getInstance class method."
             )
 
-        nodes = ["192.168.1.69"]
+        nodes = []
+        file = open("nodes.txt")
+        for node in file.readlines():
+            nodes.append(node.strip())
+
         self.nodes = nodes
