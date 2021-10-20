@@ -4,7 +4,24 @@ from transaction import Transaction
 
 
 class Wallet:
-    def __init__(self, publicKey=None, privateKey=None):
+    _instance = None
+
+    @classmethod
+    def getInstance(cls):
+        if cls._instance is None:
+            cls._instance = cls(instanceExists=True)
+        return cls._instance
+
+    @classmethod
+    def reset(cls):
+        cls._instance = None
+
+    def __init__(self, publicKey=None, privateKey=None, instanceExists=False):
+        if not instanceExists:
+            raise RuntimeError(
+                f"{self.__class__.__name__} is a singleton, use the getInstance class method."
+            )
+
         if not publicKey or not privateKey:
             signingKey = SigningKey.generate(SECP256k1, hashfunc=sha3_256)
             verifyingKey = signingKey.verifying_key

@@ -25,7 +25,7 @@ class BlockChain:
         self.chain = []
 
     def createGenesis(self):
-        wallet = Wallet()
+        wallet = Wallet.getInstance()
 
         newTransaction = Transaction(100, "genesis", "tim")
         newTransaction.signTransaction(wallet.privateKey)

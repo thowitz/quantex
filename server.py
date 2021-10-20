@@ -7,8 +7,8 @@ from wallet import Wallet
 from node import Node
 
 blockchain = BlockChain.getInstance()
-wallet = Wallet()
-node = Node()
+wallet = Wallet.getInstance()
+node = Node.getInstance()
 
 app = Flask(__name__)
 app.register_blueprint(views, url_prefix="/")
