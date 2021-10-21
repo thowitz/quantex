@@ -15,6 +15,8 @@ node = Node.getInstance()
 savedChainFile = open("chain.json")
 savedChain = json.load(savedChainFile)
 
+savedChainFile.close()
+
 if savedChain:
     blockchain.chain = savedChain
 elif not savedChain:
