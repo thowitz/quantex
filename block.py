@@ -3,7 +3,7 @@ import time
 
 
 class Block:
-    def __init__(self, index, previousBlockHash, transactionList):
+    def __init__(self, index: int, previousBlockHash: str, transactionList: list):
         self.index = index
         self.previousBlockHash = previousBlockHash
         self.transactionList = transactionList
@@ -27,7 +27,7 @@ class Block:
         return hexHash
 
     @staticmethod
-    def validateBlocks(block, previousBlock):
+    def validateBlocks(block: dict, previousBlock: dict):
         if type(block.index) != int:
             return False
         elif type(block.previousBlockHash) != str:

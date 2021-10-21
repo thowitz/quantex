@@ -4,7 +4,7 @@ import json
 
 
 class Transaction:
-    def __init__(self, amount, senderPublicKey, recipientPublicKey):
+    def __init__(self, amount: int, senderPublicKey: str, recipientPublicKey: str):
         self.amount = amount
         self.senderPublicKey = senderPublicKey
         self.recipientPublicKey = recipientPublicKey
@@ -15,7 +15,7 @@ class Transaction:
             "recipientPublicKey": self.recipientPublicKey,
         }
 
-    def signTransaction(self, privateKey):
+    def signTransaction(self, privateKey: str):
         signingKey = SigningKey.from_string(
             bytearray.fromhex(privateKey), SECP256k1, sha3_256
         )
@@ -36,7 +36,7 @@ class Transaction:
         }
 
     @staticmethod
-    def validateTransactions(transactionList):
+    def validateTransactions(transactionList: list):
         for signedTransaction in transactionList:
             if type(signedTransaction.transaction.amount) != float:
                 return False

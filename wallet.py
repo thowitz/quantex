@@ -16,7 +16,12 @@ class Wallet:
     def reset(cls):
         cls._instance = None
 
-    def __init__(self, publicKey=None, privateKey=None, instanceExists=False):
+    def __init__(
+        self,
+        publicKey: str = None,
+        privateKey: str = None,
+        instanceExists: bool = False,
+    ):
         if not instanceExists:
             raise RuntimeError(
                 f"{self.__class__.__name__} is a singleton, use the getInstance class method."
@@ -32,7 +37,7 @@ class Wallet:
         self.publicKey = publicKey
         self.privateKey = privateKey
 
-    def transferCoins(self, amount, recipientPublicKey):
+    def transferCoins(self, amount: int, recipientPublicKey: str):
         transaction = Transaction(amount, self.publicKey, recipientPublicKey)
 
         transaction.signTransaction(self.privateKey)

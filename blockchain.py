@@ -19,7 +19,7 @@ class BlockChain:
     def reset(cls):
         cls._instance = None
 
-    def __init__(self, instanceExists=False):
+    def __init__(self, instanceExists: bool = False):
         if not instanceExists:
             raise RuntimeError(
                 f"{self.__class__.__name__} is a singleton, use the getInstance class method."
@@ -41,10 +41,10 @@ class BlockChain:
     def lastBlock(self):
         return self.chain[-1]
 
-    def appendBlock(self, newBlock):
+    def appendBlock(self, newBlock: dict):
         self.chain.append(newBlock)
 
-    def processProspectiveBlock(self, prospectiveNewBlock):
+    def processProspectiveBlock(self, prospectiveNewBlock: dict):
         # todo check for correct validator public key
 
         if not Block.validateBlocks(prospectiveNewBlock, self.chain[-1]):
