@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, Request
 from blockchain import BlockChain
 from block import Block
 from node import Node
@@ -25,9 +25,9 @@ def returnChain():
     return json.dumps(blockchain.chain), 200
 
 
-@views.route("/chain/new", methods=["POST"])
-def newChain():
-    return standardResponse(blockchain.processProspectiveChain())
+@views.route("/block/new", methods=["POST"])
+def newBlock():
+    return standardResponse(blockchain.processProspectiveBlock(Request.get_json()))
 
 
 @views.route("/nodes/current")
@@ -35,6 +35,6 @@ def returnNodes():
     return json.dumps(node.nodes), 200
 
 
-@views.route("/newBlock", methods=["POST"])
-def newBlock():
-    return standardResponse(blockchain.processProspectiveBlock())
+@views.route("/nodes/new", methods=["POST"])
+def newNodes():
+    return standardResponse(node.processProspectiveNodes(Request.get_json()))
