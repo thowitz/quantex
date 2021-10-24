@@ -37,7 +37,7 @@ class Block:
 
     @staticmethod
     def verifyProof(proofNumber, previousProofNumber):
-        guess = f"{proofNumber}{previousProofNumber}"
+        guess = f"{proofNumber}{previousProofNumber}".encode()
 
         hash = MD5.new()
         hash.update(guess)
@@ -45,26 +45,28 @@ class Block:
 
         return attempt[:4] == "0000"
 
-    def validateBlocks(self, block: dict, previousBlock: dict):
-        if type(block.index) != int:
-            return False
-        elif type(block.previousBlockHash) != str:
-            return False
-        elif type(block.transactionList) != list:
-            return False
-        elif type(block.timestamp) != float:
-            return False
+    @staticmethod
+    def validateBlocks(block: dict, previousBlock: dict):
+        print(type(block["transactionList"]))
+        if type(block["index"]) != int:
+            return "Incorrect index type"
+        elif type(block["previousBlockHash"]) != str:
+            return "Incorrect previous block hash type"
+        elif type(block["transactionList"]) != list:
+            return "Incorrect transaction list type"
+        elif type(block["timestamp"]) != float:
+            return "Incorrect timestamp type"
 
-        if not self.verifyProof(block.proofNumber, previousBlock.proofNumber):
-            return False
+        if not Block.verifyProof(block["proofNumber"], previousBlock["proofNumber"]):
+            return "Incorrect proof"
 
-        if block.previousBlockHash != previousBlock.blockHash:
-            return False
+        if block["previousBlockHash"] != previousBlock["blockHash"]:
+            return "Incorrect previous block hash"
 
-        elif block.index <= previousBlock.index:
-            return False
+        elif block["index"] <= previousBlock["index"]:
+            return "Incorrect index"
 
-        elif block.timestamp <= previousBlock.timestamp:
-            return False
+        elif block["timestamp"] <= previousBlock["timestamp"]:
+            return "Incorrect timestamp"
 
         return True
