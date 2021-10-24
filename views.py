@@ -1,4 +1,4 @@
-from flask import Blueprint, Request
+from flask import Blueprint, request
 from blockchain import BlockChain
 from block import Block
 from node import Node
@@ -10,11 +10,18 @@ blockchain = BlockChain.getInstance()
 node = Node.getInstance()
 
 
-def standardResponse(conditional):
-    if conditional:
-        return True, 200
+def standardResponse(functionToCall, *args):
+    try:
+        req = request.get_json()
+    except:
+        return {"result": "Incorrect Format"}, 400
+
+    result = functionToCall(req, *args)
+
+    if result == True:
+        return {"result": "Success"}, 200
     else:
-        return False, 400
+        return {"result": result}, 400
 
 
 views = Blueprint(__name__, "views")
@@ -27,7 +34,7 @@ def returnChain():
 
 @views.route("/block/new", methods=["POST"])
 def newBlock():
-    return standardResponse(blockchain.processProspectiveBlock(Request.get_json()))
+    return standardResponse(blockchain.processProspectiveBlock)
 
 
 @views.route("/nodes/current")
@@ -37,4 +44,4 @@ def returnNodes():
 
 @views.route("/nodes/new", methods=["POST"])
 def newNodes():
-    return standardResponse(node.processProspectiveNodes(Request.get_json()))
+    return standardResponse(node.processProspectiveNodes)
