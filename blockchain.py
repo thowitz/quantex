@@ -35,7 +35,9 @@ class BlockChain:
         newTransaction = Transaction(100, "genesis", "tim")
         newTransaction.signTransaction(wallet.privateKey)
 
-        self.appendBlock(Block(0, None, [newTransaction.signedTransaction]).blockData)
+        self.appendBlock(
+            Block(0, None, [newTransaction.signedTransaction], 0).blockData
+        )
 
     @property
     def lastBlock(self):
@@ -92,5 +94,13 @@ class BlockChain:
 
         return True
 
-    def proofOfStake():
-        pass
+    @staticmethod
+    def mine(previousProofNumber):
+        proofNumber = 0
+
+        while True:
+            print(f"⛏️ mining proof {proofNumber}...")
+            if Block.verifyProof(proofNumber, previousProofNumber):
+                return proofNumber
+            else:
+                proofNumber += 1

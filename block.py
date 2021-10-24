@@ -1,18 +1,27 @@
 from Crypto.Hash import SHA3_256
+from Crypto.Hash import MD5
 import time
 
 
 class Block:
-    def __init__(self, index: int, previousBlockHash: str, transactionList: list):
+    def __init__(
+        self,
+        index: int,
+        previousBlockHash: str,
+        transactionList: list,
+        proofNumber: int,
+    ):
         self.index = index
         self.previousBlockHash = previousBlockHash
         self.transactionList = transactionList
+        self.proofNumber = proofNumber
 
         self.blockData = {
             "index": self.index,
             "previousBlockHash": self.previousBlockHash,
             "transactionList": self.transactionList,
             "timestamp": time.time(),
+            "proofNumber": proofNumber,
         }
 
     @property
@@ -27,7 +36,16 @@ class Block:
         return hexHash
 
     @staticmethod
-    def validateBlocks(block: dict, previousBlock: dict):
+    def verifyProof(proofNumber, previousProofNumber):
+        guess = f"{proofNumber}{previousProofNumber}"
+
+        hash = MD5.new()
+        hash.update(guess)
+        attempt = hash.hexdigest()
+
+        return attempt[:4] == "0000"
+
+    def validateBlocks(self, block: dict, previousBlock: dict):
         if type(block.index) != int:
             return False
         elif type(block.previousBlockHash) != str:
@@ -35,6 +53,9 @@ class Block:
         elif type(block.transactionList) != list:
             return False
         elif type(block.timestamp) != float:
+            return False
+
+        if not self.verifyProof(block.proofNumber, previousBlock.proofNumber):
             return False
 
         if block.previousBlockHash != previousBlock.blockHash:
