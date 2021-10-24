@@ -49,10 +49,16 @@ class BlockChain:
     def processProspectiveBlock(self, prospectiveNewBlock: dict):
         # todo check for correct validator public key
 
-        if not Block.validateBlocks(prospectiveNewBlock, self.chain[-1]):
-            return False
-        elif not Transaction.validateTransactions(prospectiveNewBlock.transactionList):
-            return False
+        validateBlockResult = Block.validateBlocks(prospectiveNewBlock, self.chain[-1])
+
+        if validateBlockResult != True:
+            return validateBlockResult
+
+        validateTransactionsResult = Transaction.validateTransactions(
+            prospectiveNewBlock.transactionList
+        )
+        if validateTransactionsResult != True:
+            return validateTransactionsResult
 
         self.appendBlock(prospectiveNewBlock)
 
