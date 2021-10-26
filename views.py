@@ -45,3 +45,13 @@ def returnNodes():
 @views.route("/nodes/new", methods=["POST"])
 def newNodes():
     return standardResponse(node.processProspectiveNodes)
+
+
+@views.route("/transaction-pool/current")
+def returnTransactionPool():
+    return json.dumps(node.transactionPool), 200
+
+
+@views.route("/transaction-pool/new", methods=["POST"])
+def newTransaction():
+    return standardResponse(node.processProspectiveTransaction)
