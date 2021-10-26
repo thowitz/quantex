@@ -78,8 +78,9 @@ class BlockChain:
             if response.status_code == 200:
                 prospectiveNewChain = response.json()
 
-                if len(prospectiveNewChain) > len(self.chain) and self.validateChain(
-                    prospectiveNewChain
+                if (
+                    len(prospectiveNewChain) > len(self.chain)
+                    and self.validateChain(prospectiveNewChain) == True
                 ):
                     self.chain = prospectiveNewChain
 
@@ -93,10 +94,17 @@ class BlockChain:
     def validateChain(self):
         for block in self.chain:
             if block.index != 0:
-                if not Block.validateBlocks(block, self.chain[block.index - 1]):
-                    return False
-                if not Transaction.validateTransactions(block.transactionList):
-                    return False
+                validateBlockResult = Block.validateBlocks(
+                    block, self.chain[block.index - 1]
+                )
+                if validateBlockResult != True:
+                    return validateBlockResult
+
+                validateTransactionsResult = Transaction.validateTransactions(
+                    block.transactionList
+                )
+                if validateTransactionsResult != True:
+                    return validateTransactionsResult
 
         return True
 
