@@ -53,7 +53,7 @@ class Node:
         savedNodesFile.close()
 
         if newNodes:
-            self.nodes.append(newNodes)
+            self.nodes.extend(newNodes)
             return True
         return False
 
@@ -63,6 +63,6 @@ class Node:
         if validateTransactionsResult != True:
             return validateTransactionsResult
         
-        self.transactionPool.append(prospectiveTransactions)
+        self.transactionPool.extend(prospectiveTransactions)
         
         return True
