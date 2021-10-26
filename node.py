@@ -1,3 +1,7 @@
+import requests
+from transaction import Transaction
+
+
 class Node:
     _instance = None
 
@@ -26,6 +30,16 @@ class Node:
 
         self.nodes = nodes
 
+        self.transactionPool = []
+
+        for node in self.nodes:
+            prospectiveNodes = requests.get(f"http://{node}/nodes/current")
+            prospectiveTransactions = requests.get(
+                f"http://{node}/transaction-pool/current"
+            )
+            self.processProspectiveNodes(prospectiveNodes)
+            self.processProspectiveTransactions(prospectiveTransactions)
+
     def processProspectiveNodes(self, prospectiveNodes: list):
         newNodes = []
 
@@ -42,3 +56,13 @@ class Node:
             self.nodes.append(newNodes)
             return True
         return False
+
+    def processProspectiveTransactions(self, prospectiveTransactions: list):
+        validateTransactionsResult = Transaction.validateTransactions(prospectiveTransactions)
+        
+        if validateTransactionsResult != True:
+            return validateTransactionsResult
+        
+        self.transactionPool.append(prospectiveTransactions)
+        
+        return True

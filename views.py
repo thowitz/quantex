@@ -54,4 +54,4 @@ def returnTransactionPool():
 
 @views.route("/transaction-pool/new", methods=["POST"])
 def newTransaction():
-    return standardResponse(node.processProspectiveTransaction)
+    return standardResponse(node.processProspectiveTransactions)
