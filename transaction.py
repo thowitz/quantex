@@ -38,12 +38,12 @@ class Transaction:
     @staticmethod
     def validateTransactions(transactionList: list):
         for signedTransaction in transactionList:
-            if type(signedTransaction.transaction.amount) != float:
-                return False
-            elif type(signedTransaction.transaction.senderPublicKey) != str:
-                return False
-            elif type(signedTransaction.transaction.recipientPublicKey) != str:
-                return False
+            if type(signedTransaction["transaction"]["amount"]) != float:
+                return "Incorrect transaction amount type"
+            elif type(signedTransaction["transaction"]["senderPublicKey"]) != str:
+                return "Incorrect sender public key type"
+            elif type(signedTransaction["transaction"]["recipientPublicKey"]) != str:
+                return "Incorrect recipient public key type"
 
             verifyingKey = VerifyingKey.from_string(
                 signedTransaction.transaction.senderPublicKey
@@ -54,6 +54,6 @@ class Transaction:
                     signedTransaction.signature, signedTransaction, sha3_256
                 )
             except (ValueError, TypeError, BadSignatureError):
-                return False
+                return "Incorrect signature"
 
         return True
