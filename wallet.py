@@ -84,6 +84,9 @@ class Wallet:
         return encryptedPrivateKey
 
     def transferCoins(self, amount: int, recipientPublicKey: str):
+        if not self.publicKey or not self.privateKey:
+            return "Public key or private key not part of this instance"
+
         transaction = Transaction(amount, self.publicKey, recipientPublicKey)
 
         transaction.signTransaction(self.privateKey)
