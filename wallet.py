@@ -30,15 +30,25 @@ class Wallet:
     def createPrivateKey(self):
         if not self.privateKey:
             signingKey = SigningKey.generate(SECP256k1, hashfunc=sha3_256)
-            verifyingKey = signingKey.verifying_key
 
-            publicKey = verifyingKey.to_string("compressed").hex()
             privateKey = signingKey.to_string().hex()
-
-            self.publicKey = publicKey
             self.privateKey = privateKey
 
             return self.privateKey
+
+    def calculatePublicKey(self, privateKey: str = None):
+        if not privateKey:
+            privateKey = self.privateKey
+
+        signingKey = SigningKey.from_string(
+            privateKey, curve=SECP256k1, hashfunc=sha3_256
+        )
+        verifyingKey = signingKey.verifying_key
+
+        publicKey = verifyingKey.to_string("compressed").hex()
+        self.publicKey = publicKey
+
+        return self.publicKey
 
     def readPrivateKey(self, privateKeyPassword: str):
         savedPrivateKeyFile = open("private-key.json")
@@ -55,7 +65,7 @@ class Wallet:
 
         self.privateKey = privateKey
 
-        return privateKey
+        return self.privateKey
 
     def savePrivateKey(self, privateKeyPassword: str, privateKey: str = None):
         if not privateKey:

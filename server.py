@@ -13,6 +13,7 @@ privateKeyPassword = "thanks for all the fish"
 blockchain = BlockChain.getInstance()
 wallet = Wallet.getInstance()
 wallet.readPrivateKey(privateKeyPassword)
+wallet.calculatePublicKey()
 node = Node.getInstance()
 
 savedChainFile = open("chain.json")
