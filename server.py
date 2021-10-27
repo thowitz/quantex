@@ -10,11 +10,9 @@ import requests
 
 privateKeyPassword = "thanks for all the fish"
 
-privateKey = Wallet.readPrivateKey(privateKeyPassword)
-
 blockchain = BlockChain.getInstance()
-wallet = Wallet(privateKey=privateKey, instanceExists=True)
-wallet._instance = wallet
+wallet = Wallet.getInstance()
+wallet.readPrivateKey(privateKeyPassword)
 node = Node.getInstance()
 
 savedChainFile = open("chain.json")

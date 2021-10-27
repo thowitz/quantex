@@ -20,8 +20,6 @@ class Wallet:
 
     def __init__(
         self,
-        publicKey: str = None,
-        privateKey: str = None,
         instanceExists: bool = False,
     ):
         if not instanceExists:
@@ -29,17 +27,19 @@ class Wallet:
                 f"{self.__class__.__name__} is a singleton, use the getInstance class method."
             )
 
-        if not publicKey or not privateKey:
+    def createPrivateKey(self):
+        if not self.privateKey:
             signingKey = SigningKey.generate(SECP256k1, hashfunc=sha3_256)
             verifyingKey = signingKey.verifying_key
 
             publicKey = verifyingKey.to_string("compressed").hex()
             privateKey = signingKey.to_string().hex()
 
-        self.publicKey = publicKey
-        self.privateKey = privateKey
-        
-    @staticmethod
+            self.publicKey = publicKey
+            self.privateKey = privateKey
+
+            return self.privateKey
+
     def readPrivateKey(privateKeyPassword: str):
         savedPrivateKeyFile = open("private-key.json")
         savedEncryptedPrivateKey = json.load(savedPrivateKeyFile.privateKey)
