@@ -86,6 +86,7 @@ class BlockChain:
 
                     savedChainFile = open("chain.json", "w")
                     json.dump(self.chain, savedChainFile, indent=4)
+                    savedChainFile.close()
 
                     return True
 
