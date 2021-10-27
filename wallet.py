@@ -40,22 +40,27 @@ class Wallet:
 
             return self.privateKey
 
-    def readPrivateKey(privateKeyPassword: str):
+    def readPrivateKey(self, privateKeyPassword: str):
         savedPrivateKeyFile = open("private-key.json")
         savedEncryptedPrivateKey = json.load(savedPrivateKeyFile.privateKey)
         savedPrivateKeyFile.close()
 
         privateKeyPasswordObject = Fernet(privateKeyPassword)
         try:
-            savedPrivateKey = privateKeyPasswordObject.decrypt(savedEncryptedPrivateKey)
+            privateKey = privateKeyPasswordObject.decrypt(savedEncryptedPrivateKey)
         except InvalidToken:
             return "Token is malformed or does not have a valid signature"
         except TypeError:
             return "Incorrect token type"
 
-        return savedPrivateKey
+        self.privateKey = privateKey
+
+        return privateKey
 
     def savePrivateKey(self, privateKeyPassword: str, privateKey: str = None):
+        if not privateKey:
+            privateKey = self.privateKey
+
         privateKeyPasswordObject = Fernet(privateKeyPassword)
         try:
             encryptedPrivateKey = privateKeyPasswordObject.encrypt(privateKey)
