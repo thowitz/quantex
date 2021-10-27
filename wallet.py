@@ -1,6 +1,8 @@
 from hashlib import sha3_256
 from ecdsa import SigningKey, SECP256k1
+from cryptography.fernet import Fernet, InvalidToken
 from transaction import Transaction
+import json
 
 
 class Wallet:
@@ -36,6 +38,21 @@ class Wallet:
 
         self.publicKey = publicKey
         self.privateKey = privateKey
+        
+    @staticmethod
+    def readPrivateKey(privateKeyPassword: str):
+        savedPrivateKeyFile = open("private-key.json")
+        savedEncryptedPrivateKey = json.load(savedPrivateKeyFile.privateKey)
+        
+        privateKeyPasswordObject = Fernet(privateKeyPassword)
+        try:
+            savedPrivateKey = privateKeyPasswordObject.decrypt(savedEncryptedPrivateKey)
+        except InvalidToken :
+            return "Token is malformed or does not have a valid signature"
+        except TypeError:
+            return "Incorrect token type"
+        
+        return savedPrivateKey
 
     def transferCoins(self, amount: int, recipientPublicKey: str):
         transaction = Transaction(amount, self.publicKey, recipientPublicKey)

@@ -8,8 +8,13 @@ from node import Node
 import json
 import requests
 
+privateKeyPassword = "thanks for all the fish"
+
+privateKey = Wallet.readPrivateKey(privateKeyPassword)
+
 blockchain = BlockChain.getInstance()
-wallet = Wallet.getInstance()
+wallet = Wallet(privateKey=privateKey, instanceExists=True)
+wallet._instance = wallet
 node = Node.getInstance()
 
 savedChainFile = open("chain.json")
