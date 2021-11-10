@@ -1,0 +1,12 @@
+{
+  "genesisBlock": {
+    "hash": "",
+    "blockData": {
+      "index": 0,
+      "previousBlockHash": "",
+      "transactionList": [],
+      "timestamp": 42,
+      "proofNumber": 0
+    }
+  }
+}

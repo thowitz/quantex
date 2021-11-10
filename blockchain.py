@@ -25,19 +25,14 @@ class BlockChain:
                 f"{self.__class__.__name__} is a singleton, use the getInstance class method."
             )
 
+        configFile = open("config.json")
+        self.config = json.load(configFile)
+        configFile.close()
+
         self.chain = []
 
     def createGenesis(self):
-        # todo proper placeholder private key
-
-        wallet = Wallet.getInstance()
-
-        newTransaction = Transaction(100, "genesis", "tim")
-        newTransaction.signTransaction(wallet.privateKey)
-
-        self.appendBlock(
-            Block(0, None, [newTransaction.signedTransaction], 0).blockData
-        )
+        self.appendBlock(self.config.genesisBlock.blockData)
 
     @property
     def lastBlock(self):
@@ -106,6 +101,13 @@ class BlockChain:
                 )
                 if validateTransactionsResult != True:
                     return validateTransactionsResult
+
+            else:
+                # I know this won't work yet with the current block manipulation implementation (using dicts), 
+                # but just bear with me
+                
+                if block.blockHash != self.config.genesisBlock.hash:
+                    return False
 
         return True
 
