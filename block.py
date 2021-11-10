@@ -10,18 +10,24 @@ class Block:
         previousBlockHash: str,
         transactionList: list,
         proofNumber: int,
+        timestamp: int = None,
     ):
         self.index = index
         self.previousBlockHash = previousBlockHash
         self.transactionList = transactionList
         self.proofNumber = proofNumber
 
+        if timestamp:
+            self.timestamp = timestamp
+        else:
+            self.timestamp = time.time()
+
         self.blockData = {
             "index": self.index,
             "previousBlockHash": self.previousBlockHash,
             "transactionList": self.transactionList,
-            "timestamp": time.time(),
-            "proofNumber": proofNumber,
+            "timestamp": self.timestamp,
+            "proofNumber": self.proofNumber,
         }
 
     @property
