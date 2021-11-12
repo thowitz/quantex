@@ -36,16 +36,20 @@ class BlockChain:
 
     @property
     def lastBlock(self):
-        lastBLock = Block().fromDict(self.chain[-1])
-        return lastBLock
+        lastBlock = Block().fromDict(self.chain[-1])
+        return lastBlock
 
-    def appendBlock(self, newBlock: dict):
-        # todo call to dict block method
-        
-        self.chain.append(newBlock)
+    def appendBlock(self, newBlock: object):
+        blockDict = Block().toDict(newBlock)
+        if blockDict != True:
+            return blockDict
+
+        self.chain.append(blockDict)
 
     def processProspectiveBlock(self, prospectiveNewBlock: object):
-        validateBlockResult = Block.validateBlocks(prospectiveNewBlock, self.lastBlock())
+        validateBlockResult = Block.validateBlocks(
+            prospectiveNewBlock, self.lastBlock()
+        )
 
         if validateBlockResult != True:
             return validateBlockResult

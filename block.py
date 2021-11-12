@@ -57,6 +57,28 @@ class Block:
 
         return validateTypesResult
 
+    def toDict(self, blockObject: object):
+        if (
+            not blockObject.index
+            or not blockObject.previousBlockHash
+            or not blockObject.transactionList
+            or not blockObject.proofNumber
+            or not blockObject.timestamp
+        ):
+            return "Not enough data points in object"
+
+        validateTypesResult = self.validateTypes(blockObject)
+        if validateTypesResult != True:
+            return validateTypesResult
+
+        return {
+            "index": blockObject.index,
+            "previousBlockHash": blockObject.previousBlockHash,
+            "transactionList": blockObject.transactionList,
+            "timstamp": blockObject.timestamp,
+            "proofNumber": blockObject.proofNumber,
+        }
+
     @staticmethod
     def validateTypes(block: object):
         if type(block.index) != int:
