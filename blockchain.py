@@ -36,15 +36,16 @@ class BlockChain:
 
     @property
     def lastBlock(self):
-        return self.chain[-1]
+        lastBLock = Block().fromDict(self.chain[-1])
+        return lastBLock
 
     def appendBlock(self, newBlock: dict):
+        # todo call to dict block method
+        
         self.chain.append(newBlock)
 
-    def processProspectiveBlock(self, prospectiveNewBlock: dict):
-        # todo check for correct validator public key
-
-        validateBlockResult = Block.validateBlocks(prospectiveNewBlock, self.chain[-1])
+    def processProspectiveBlock(self, prospectiveNewBlock: object):
+        validateBlockResult = Block.validateBlocks(prospectiveNewBlock, self.lastBlock())
 
         if validateBlockResult != True:
             return validateBlockResult

@@ -20,7 +20,7 @@ class Block:
         return hexHash
 
     @staticmethod
-    def verifyProof(proofNumber, previousProofNumber):
+    def verifyProof(proofNumber: int, previousProofNumber: int):
         guess = f"{proofNumber}{previousProofNumber}".encode()
 
         hash = MD5.new()
@@ -29,7 +29,7 @@ class Block:
 
         return attempt[:4] == "0000"
 
-    def fromDict(self, blockDict):
+    def fromDict(self, blockDict: dict):
         if (
             not blockDict["index"]
             or not blockDict["previousBlockHash"]
