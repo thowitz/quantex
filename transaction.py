@@ -4,16 +4,10 @@ import json
 
 
 class Transaction:
-    def __init__(self, amount: int, senderPublicKey: str, recipientPublicKey: str):
-        self.amount = amount
-        self.senderPublicKey = senderPublicKey
-        self.recipientPublicKey = recipientPublicKey
-
-        self.unsignedTransaction = {
-            "amount": self.amount,
-            "senderPublicKey": self.senderPublicKey,
-            "recipientPublicKey": self.recipientPublicKey,
-        }
+    def __init__(self):
+        self.amount = None
+        self.senderPublicKey = None
+        self.recipientPublicKey = None
 
     def signTransaction(self, privateKey: str):
         signingKey = SigningKey.from_string(
@@ -35,15 +29,42 @@ class Transaction:
             "signature": self.signature,
         }
 
+    def unsignedTransactionFromDict(self, unsignedTransactionDict: dict):
+        if (
+            not unsignedTransactionDict["amount"]
+            or not unsignedTransactionDict["senderPublicKey"]
+            or not unsignedTransactionDict["recipeintPublicKey"]
+        ):
+            return "Not enough data points in dict"
+
+        self.amount = unsignedTransactionDict["amount"]
+        self.senderPublicKey = unsignedTransactionDict["senderPublicKey"]
+        self.recipientPublicKey = unsignedTransactionDict["recipeintPublicKey"]
+
+        validateTypesResult = self.validateTypes(self)
+        if validateTypesResult != True:
+            self.amount = None
+            self.senderPublicKey = None
+            self.recipientPublicKey = None
+
+        return validateTypesResult
+
     @staticmethod
-    def validateTransactions(transactionList: list):
+    def validateTypes(transaction: object):
+        if type(transaction.amount) != float:
+            return "Incorrect transaction amount type"
+        elif type(transaction.senderPublicKey) != str:
+            return "Incorrect sender public key type"
+        elif type(transaction.recipientPublicKey) != str:
+            return "Incorrect recipient public key type"
+
+        return True
+
+    def validateTransactions(self, transactionList: list):
         for signedTransaction in transactionList:
-            if type(signedTransaction["transaction"]["amount"]) != float:
-                return "Incorrect transaction amount type"
-            elif type(signedTransaction["transaction"]["senderPublicKey"]) != str:
-                return "Incorrect sender public key type"
-            elif type(signedTransaction["transaction"]["recipientPublicKey"]) != str:
-                return "Incorrect recipient public key type"
+            transactionTypesResult = self.validateTypes(signedTransaction.transaction)
+            if transactionTypesResult != True:
+                return transactionTypesResult
 
             verifyingKey = VerifyingKey.from_string(
                 signedTransaction.transaction.senderPublicKey
