@@ -49,6 +49,24 @@ class Transaction:
 
         return validateTypesResult
 
+    def unsignedTransactionToDict(self, unsignedTransactionObject: object):
+        if (
+            not unsignedTransactionObject.amount
+            or not unsignedTransactionObject.senderPublicKey
+            or not unsignedTransactionObject.recipeintPublicKey
+        ):
+            return "Not enough data points in object"
+
+        validateTypesResult = self.validateTypes(unsignedTransactionObject)
+        if validateTypesResult != True:
+            return validateTypesResult
+
+        return {
+            "amount": unsignedTransactionObject.amount,
+            "senderPublicKey": unsignedTransactionObject.senderPublicKey,
+            "recipientPublicKey": unsignedTransactionObject.recipientPublicKey,
+        }
+
     @staticmethod
     def validateTypes(transaction: object):
         if type(transaction.amount) != float:
