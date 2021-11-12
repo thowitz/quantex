@@ -87,10 +87,20 @@ class Wallet:
         if not self.publicKey or not self.privateKey:
             return "Public key or private key not part of this instance"
 
-        transaction = Transaction(amount, self.publicKey, recipientPublicKey)
+        unsignedTransactionDict = {
+            "amount": amount,
+            "senderPublicKey": self.publicKey,
+            "recipientPublicKey": recipientPublicKey,
+        }
+        
+        transaction = Transaction()
+        transactionFromDictResult = transaction.unsignedTransactionFromDict(unsignedTransactionDict)
+        
+        if transactionFromDictResult != True:
+            return transactionFromDictResult
 
         transaction.signTransaction(self.privateKey)
 
-        newTransaction = transaction.transactionData
+        newTransaction = transaction.signedTransaction
 
         return newTransaction

@@ -58,8 +58,6 @@ class Node:
         return False
 
     def processProspectiveTransactions(self, prospectiveTransactions: list):
-        # todo use to transaction to dict
-
         validateTransactionsResult = Transaction.validateTransactions(
             prospectiveTransactions
         )
@@ -67,6 +65,17 @@ class Node:
         if validateTransactionsResult != True:
             return validateTransactionsResult
 
-        self.transactionPool.extend(prospectiveTransactions)
+        transactionList = []
+
+        for transaction in prospectiveTransactions:
+            transactionToDictResult = Transaction().unsignedTransactionToDict(
+                transaction
+            )
+            if transactionToDictResult != True:
+                return transactionToDictResult
+
+            transactionList.append(transactionToDictResult)
+
+        self.transactionPool.extend(transactionList)
 
         return True

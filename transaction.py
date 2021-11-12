@@ -21,11 +21,11 @@ class Transaction:
 
     @property
     def signedTransaction(self):
-        if not self.signature:
+        if not self.signature or not self.unsignedTransactionDict:
             return False
 
         return {
-            "transaction": self.unsignedTransaction,
+            "transaction": self.unsignedTransactionDict,
             "signature": self.signature,
         }
 
@@ -60,12 +60,14 @@ class Transaction:
         validateTypesResult = self.validateTypes(unsignedTransactionObject)
         if validateTypesResult != True:
             return validateTypesResult
-
-        return {
+        
+        self.unsignedTransactionDict = {
             "amount": unsignedTransactionObject.amount,
             "senderPublicKey": unsignedTransactionObject.senderPublicKey,
             "recipientPublicKey": unsignedTransactionObject.recipientPublicKey,
         }
+
+        return self.unsignedTransactionDict
 
     @staticmethod
     def validateTypes(transaction: object):
