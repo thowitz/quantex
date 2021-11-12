@@ -4,40 +4,18 @@ import time
 
 
 class Block:
-    def __init__(
-        self,
-        index: int,
-        previousBlockHash: str,
-        transactionList: list,
-        proofNumber: int,
-        timestamp: int = None,
-    ):
-        self.index = index
-        self.previousBlockHash = previousBlockHash
-        self.transactionList = transactionList
-        self.proofNumber = proofNumber
-
-        if timestamp:
-            self.timestamp = timestamp
-        else:
-            self.timestamp = time.time()
-
-        self.blockData = {
-            "index": self.index,
-            "previousBlockHash": self.previousBlockHash,
-            "transactionList": self.transactionList,
-            "timestamp": self.timestamp,
-            "proofNumber": self.proofNumber,
-        }
+    def __init__(self):
+        self.index = None
+        self.previousBlockHash = None
+        self.transactionList = None
+        self.proofNumber = None
+        self.timestamp = None
 
     @property
     def blockHash(self):
         hash = SHA3_256.new()
         hash.update(self.blockData.encode())
         hexHash = hash.hexdigest()
-
-        print(self.blockData)
-        print(hexHash)
 
         return hexHash
 
@@ -51,28 +29,70 @@ class Block:
 
         return attempt[:4] == "0000"
 
+    def fromDict(self, blockDict):
+        if (
+            not blockDict["index"]
+            or not blockDict["previousBlockHash"]
+            or not blockDict["transactionList"]
+            or not blockDict["proofNumber"]
+        ):
+            return "Not enough data points in dict"
+
+        self.index = blockDict["index"]
+        self.previousBlockHash = blockDict["previousBlockHash"]
+        self.transactionList = blockDict["transactionList"]
+        self.proofNumber = blockDict["proofNumber"]
+        if blockDict.timestamp:
+            self.timestamp = blockDict["timestamp"]
+        elif not blockDict.timestamp:
+            self.timestamp = time.time()
+
+        validateTypesResult = self.validateTypes(self)
+        if validateTypesResult != True:
+            self.index = None
+            self.previousBlockHash = None
+            self.transactionList = None
+            self.proofNumber = None
+            self.timestamp = None
+
+        return validateTypesResult
+
     @staticmethod
-    def validateBlocks(block: dict, previousBlock: dict):
-        print(type(block["transactionList"]))
-        if type(block["index"]) != int:
+    def validateTypes(block: object):
+        if type(block.index) != int:
             return "Incorrect index type"
-        elif type(block["previousBlockHash"]) != str:
+        elif type(block.previousBlockHash) != str:
             return "Incorrect previous block hash type"
-        elif type(block["transactionList"]) != list:
+        elif type(block.transactionList) != list:
             return "Incorrect transaction list type"
-        elif type(block["timestamp"]) != float:
+        elif type(block.proofNumber) != int:
+            return "Incorrect proof number type"
+        elif type(block.timestamp) != float:
             return "Incorrect timestamp type"
 
-        if not Block.verifyProof(block["proofNumber"], previousBlock["proofNumber"]):
+        return True
+
+    def validateBlocks(self, previousBlock: object):
+        block = self
+
+        blockTypesResult = self.validateTypes(block)
+        previousBlockTypesResult = self.validateTypes(previousBlock)
+
+        if blockTypesResult != True:
+            return blockTypesResult
+        elif previousBlockTypesResult != True:
+            return previousBlockTypesResult
+
+        if not Block.verifyProof(block.proofNumber, previousBlock.proofNumber):
             return "Incorrect proof"
 
-        if block["previousBlockHash"] != previousBlock["blockHash"]:
+        if block.previousBlockHash != previousBlock.blockHash:
             return "Incorrect previous block hash"
 
-        elif block["index"] <= previousBlock["index"]:
+        elif block.index <= previousBlock.index:
             return "Incorrect index"
 
-        elif block["timestamp"] <= previousBlock["timestamp"]:
+        elif block.timestamp <= previousBlock.timestamp:
             return "Incorrect timestamp"
 
         return True
