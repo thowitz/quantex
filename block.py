@@ -72,9 +72,7 @@ class Block:
 
         return True
 
-    def validateBlocks(self, previousBlock: object):
-        block = self
-
+    def validateBlocks(self, block: object, previousBlock: object):
         blockTypesResult = self.validateTypes(block)
         previousBlockTypesResult = self.validateTypes(previousBlock)
 
@@ -83,7 +81,7 @@ class Block:
         elif previousBlockTypesResult != True:
             return previousBlockTypesResult
 
-        if not Block.verifyProof(block.proofNumber, previousBlock.proofNumber):
+        if not self.verifyProof(block.proofNumber, previousBlock.proofNumber):
             return "Incorrect proof"
 
         if block.previousBlockHash != previousBlock.blockHash:

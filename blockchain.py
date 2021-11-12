@@ -88,11 +88,17 @@ class BlockChain:
         return False
 
     def validateChain(self):
-        for block in self.chain:
+        for blockDict in self.chain:
+            block = Block().fromDict(blockDict)
+            if block != True:
+                return block
+
+            previousBlock = Block().fromDict(self.chain[block.index - 1])
+            if previousBlock != True:
+                return previousBlock
+
             if block.index != 0:
-                validateBlockResult = Block.validateBlocks(
-                    block, self.chain[block.index - 1]
-                )
+                validateBlockResult = Block.validateBlocks(block, previousBlock)
                 if validateBlockResult != True:
                     return validateBlockResult
 
@@ -103,16 +109,13 @@ class BlockChain:
                     return validateTransactionsResult
 
             else:
-                # I know this won't work yet with the current block manipulation implementation (using dicts), 
-                # but just bear with me
-                
                 if block.blockHash != self.config.genesisBlock.hash:
                     return False
 
         return True
 
     @staticmethod
-    def mine(previousProofNumber):
+    def mine(previousProofNumber: int):
         proofNumber = 0
 
         while True:
