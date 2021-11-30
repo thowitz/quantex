@@ -1,6 +1,7 @@
 from Crypto.Hash import SHA3_256
 from Crypto.Hash import MD5
 import time
+import json
 
 
 class Block:
@@ -14,7 +15,11 @@ class Block:
     @property
     def blockHash(self):
         hash = SHA3_256.new()
-        hash.update(self.blockData.encode())
+
+        blockData = self.toDict(self)
+        blockDataString = json.dumps(blockData)
+
+        hash.update(blockDataString.encode())
         hexHash = hash.hexdigest()
 
         return hexHash
@@ -31,10 +36,13 @@ class Block:
 
     def fromDict(self, blockDict: dict):
         if (
-            not blockDict["index"]
-            or not blockDict["previousBlockHash"]
-            or not blockDict["transactionList"]
-            or not blockDict["proofNumber"]
+            (not blockDict["index"] and blockDict["index"] != 0)
+            or (
+                not blockDict["previousBlockHash"]
+                and blockDict["previousBlockHash"] != ""
+            )
+            or (not blockDict["transactionList"] and blockDict["transactionList"] != [])
+            or (not blockDict["proofNumber"] and blockDict["proofNumber"] != 0)
         ):
             return "Not enough data points in dict"
 
@@ -42,10 +50,10 @@ class Block:
         self.previousBlockHash = blockDict["previousBlockHash"]
         self.transactionList = blockDict["transactionList"]
         self.proofNumber = blockDict["proofNumber"]
-        if blockDict.timestamp:
-            self.timestamp = blockDict["timestamp"]
-        elif not blockDict.timestamp:
-            self.timestamp = time.time()
+        if blockDict["timestamp"]:
+            self.timestamp = round(blockDict["timestamp"])
+        elif not blockDict["timestamp"]:
+            self.timestamp = round(time.time())
 
         validateTypesResult = self.validateTypes(self)
         if validateTypesResult != True:
@@ -59,10 +67,13 @@ class Block:
 
     def toDict(self, blockObject: object):
         if (
-            not blockObject.index
-            or not blockObject.previousBlockHash
-            or not blockObject.transactionList
-            or not blockObject.proofNumber
+            (not blockObject.index and blockObject.index != 0)
+            or (
+                not blockObject.previousBlockHash
+                and blockObject.previousBlockHash != ""
+            )
+            or (not blockObject.transactionList and blockObject.transactionList != [])
+            or (not blockObject.proofNumber and blockObject.proofNumber != 0)
             or not blockObject.timestamp
         ):
             return "Not enough data points in object"
@@ -89,7 +100,7 @@ class Block:
             return "Incorrect transaction list type"
         elif type(block.proofNumber) != int:
             return "Incorrect proof number type"
-        elif type(block.timestamp) != float:
+        elif type(block.timestamp) != int:
             return "Incorrect timestamp type"
 
         return True
