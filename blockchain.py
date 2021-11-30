@@ -32,7 +32,7 @@ class BlockChain:
         self.chain = []
 
     def createGenesis(self):
-        self.appendBlock(self.config.genesisBlock.blockData)
+        self.appendBlock(self.config["genesisBlock"]["blockData"])
 
     @property
     def lastBlock(self):
@@ -94,13 +94,17 @@ class BlockChain:
 
     def validateChain(self):
         for blockDict in self.chain:
-            block = Block().fromDict(blockDict)
-            if block != True:
-                return block
+            block = Block()
+            blockFromDictResult = block.fromDict(blockDict)
+            if blockFromDictResult != True:
+                return blockFromDictResult
 
-            previousBlock = Block().fromDict(self.chain[block.index - 1])
-            if previousBlock != True:
-                return previousBlock
+            previousBlock = Block()
+            previousBlockFromDictResult = previousBlock.fromDict(
+                self.chain[block.index - 1]
+            )
+            if previousBlockFromDictResult != True:
+                return previousBlockFromDictResult
 
             if block.index != 0:
                 validateBlockResult = Block.validateBlocks(block, previousBlock)
@@ -114,7 +118,7 @@ class BlockChain:
                     return validateTransactionsResult
 
             else:
-                if block.blockHash != self.config.genesisBlock.hash:
+                if block.blockHash != self.config["genesisBlock"]["blockData"]:
                     return False
 
         return True
