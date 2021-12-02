@@ -7,6 +7,7 @@ import json
 
 
 class BlockChain:
+    # singleton to prevent mismatches in chain state between instances
     _instance = None
 
     @classmethod
@@ -66,6 +67,7 @@ class BlockChain:
 
         return True
 
+    # replaces the current chain with the longest one to provide consensus of chain state
     def resolveConflicts(self):
         node = Node.getInstance()
 
@@ -92,6 +94,7 @@ class BlockChain:
 
         return False
 
+    # validate all data points for every block in a chain
     def validateChain(self):
         for blockDict in self.chain:
             block = Block()

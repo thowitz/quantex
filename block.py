@@ -16,6 +16,7 @@ class Block:
     def blockHash(self):
         hash = SHA3_256.new()
 
+        # converts the object to a dict and then hashes as you can't really hash an object
         blockData = self.toDict(self)
         blockDataString = json.dumps(blockData)
 
@@ -24,6 +25,7 @@ class Block:
 
         return hexHash
 
+    # simple algorithm to find a hash where the first 4 characters are 0000
     @staticmethod
     def verifyProof(proofNumber: int, previousProofNumber: int):
         guess = f"{proofNumber}{previousProofNumber}".encode()
@@ -35,6 +37,7 @@ class Block:
         return attempt[:4] == "0000"
 
     def fromDict(self, blockDict: dict):
+        # verify enough of the data points exist in the dict
         if (
             (not blockDict["index"] and blockDict["index"] != 0)
             or (
@@ -46,6 +49,7 @@ class Block:
         ):
             return "Not enough data points in dict"
 
+        # the self variables get set and then self gets passed to validate types as it only takes objects
         self.index = blockDict["index"]
         self.previousBlockHash = blockDict["previousBlockHash"]
         self.transactionList = blockDict["transactionList"]
@@ -66,6 +70,7 @@ class Block:
         return validateTypesResult
 
     def toDict(self, blockObject: object):
+        # verify enough of the data points exist in the object
         if (
             (not blockObject.index and blockObject.index != 0)
             or (
