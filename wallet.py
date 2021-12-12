@@ -27,6 +27,9 @@ class Wallet:
                 f"{self.__class__.__name__} is a singleton, use the getInstance class method."
             )
 
+        self.publicKey = None
+        self.privateKey = None
+
     def createPrivateKey(self):
         if not self.privateKey:
             signingKey = SigningKey.generate(SECP256k1, hashfunc=sha3_256)
@@ -52,7 +55,7 @@ class Wallet:
 
     def readPrivateKey(self, privateKeyPassword: str):
         savedPrivateKeyFile = open("private-key.json")
-        savedEncryptedPrivateKey = json.load(savedPrivateKeyFile.privateKey)
+        savedEncryptedPrivateKey = json.load(savedPrivateKeyFile.encryptedPrivateKey)
         savedPrivateKeyFile.close()
 
         privateKeyPasswordObject = Fernet(privateKeyPassword)
@@ -92,10 +95,12 @@ class Wallet:
             "senderPublicKey": self.publicKey,
             "recipientPublicKey": recipientPublicKey,
         }
-        
+
         transaction = Transaction()
-        transactionFromDictResult = transaction.unsignedTransactionFromDict(unsignedTransactionDict)
-        
+        transactionFromDictResult = transaction.unsignedTransactionFromDict(
+            unsignedTransactionDict
+        )
+
         if transactionFromDictResult != True:
             return transactionFromDictResult
 
