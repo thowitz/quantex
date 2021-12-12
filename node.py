@@ -33,12 +33,17 @@ class Node:
         self.transactionPool = []
 
         for node in self.nodes:
-            prospectiveNodes = requests.get(f"http://{node}/nodes/current")
-            prospectiveTransactions = requests.get(
-                f"http://{node}/transaction-pool/current"
-            )
-            self.processProspectiveNodes(prospectiveNodes)
-            self.processProspectiveTransactions(prospectiveTransactions)
+            try:
+                prospectiveNodes = requests.get(
+                    f"http://{node}/nodes/current", timeout=5
+                )
+                prospectiveTransactions = requests.get(
+                    f"http://{node}/transaction-pool/current", timeout=5
+                )
+                self.processProspectiveNodes(prospectiveNodes)
+                self.processProspectiveTransactions(prospectiveTransactions)
+            except:
+                pass
 
     def processProspectiveNodes(self, prospectiveNodes: list):
         newNodes = []
