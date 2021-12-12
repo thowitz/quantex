@@ -57,6 +57,9 @@ class Node:
             return True
         return False
 
+    # this function is here because it appends to the transaction pool which is part of the node class,
+    # it could be put in the transaction class if you're really that ocd about it
+    # maybe I'll change it after I've checked off some more things on the to do list
     def processProspectiveTransactions(self, prospectiveTransactions: list):
         validateTransactionsResult = Transaction.validateTransactions(
             prospectiveTransactions
