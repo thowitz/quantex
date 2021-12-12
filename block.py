@@ -13,6 +13,7 @@ class Block:
         self.timestamp = None
 
     @property
+    # easy access to hash of block
     def blockHash(self):
         hash = SHA3_256.new()
 
@@ -25,7 +26,7 @@ class Block:
 
         return hexHash
 
-    # simple algorithm to find a hash where the first 4 characters are 0000
+    # simple temporary algorithm to find a hash where the first 4 characters are 0000
     @staticmethod
     def verifyProof(proofNumber: int, previousProofNumber: int):
         guess = f"{proofNumber}{previousProofNumber}".encode()
