@@ -34,6 +34,7 @@ def returnChain():
 
 @views.route("/block/new", methods=["POST"])
 def newBlock():
+    # deepcode ignore XSS: I don't think it's applicable here
     return standardResponse(blockchain.processProspectiveBlock)
 
 
@@ -44,6 +45,7 @@ def returnNodes():
 
 @views.route("/nodes/new", methods=["POST"])
 def newNodes():
+    # deepcode ignore XSS: I don't think it's applicable here
     return standardResponse(node.processProspectiveNodes)
 
 
@@ -54,4 +56,5 @@ def returnTransactionPool():
 
 @views.route("/transaction-pool/new", methods=["POST"])
 def newTransaction():
+    # deepcode ignore XSS: I don't think it's applicable here
     return standardResponse(node.processProspectiveTransactions)
