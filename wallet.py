@@ -55,7 +55,7 @@ class Wallet:
             privateKey = self.privateKey
 
         signingKey = SigningKey.from_string(
-            privateKey, curve=SECP256k1, hashfunc=sha3_256
+            privateKey.encode(), curve=SECP256k1, hashfunc=sha3_256
         )
         verifyingKey = signingKey.verifying_key
 
@@ -66,7 +66,8 @@ class Wallet:
 
     def readPrivateKey(self, privateKeyPassword: str):
         savedPrivateKeyFile = open("private-key.json")
-        savedEncryptedPrivateKey = json.load(savedPrivateKeyFile.encryptedPrivateKey)
+        privateKeyJson = json.load(savedPrivateKeyFile)
+        savedEncryptedPrivateKey = privateKeyJson["encryptedPrivateKey"]
         savedPrivateKeyFile.close()
 
         privateKeyPasswordObject = self.privateKeyPasswordToObject(privateKeyPassword)
@@ -80,7 +81,7 @@ class Wallet:
         except TypeError:
             return "Incorrect token type"
 
-        self.privateKey = privateKey
+        self.privateKey = privateKey.decode()
 
         return self.privateKey
 
@@ -95,8 +96,9 @@ class Wallet:
         except TypeError:
             return "Incorrect data type"
 
-        savedPrivateKeyFile = open("private-key.json", "a")
-        json.dump(encryptedPrivateKey, savedPrivateKeyFile.privateKey, indent=4)
+        savedPrivateKeyFile = open("private-key.json", "w")
+        privateKeyJson = {"encryptedPrivateKey": encryptedPrivateKey.decode()}
+        savedPrivateKeyFile.write(json.dumps(privateKeyJson, indent=4))
         savedPrivateKeyFile.close()
 
         return encryptedPrivateKey
