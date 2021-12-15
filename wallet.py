@@ -1,8 +1,10 @@
 from hashlib import sha3_256
 from ecdsa import SigningKey, SECP256k1
+from Crypto.Hash import SHA3_256
 from cryptography.fernet import Fernet, InvalidToken
 from transaction import Transaction
 import json
+import base64
 
 
 class Wallet:
@@ -39,6 +41,15 @@ class Wallet:
 
             return self.privateKey
 
+    def privateKeyPasswordToObject(self, privateKeyPassword: str):
+        hash = SHA3_256.new()
+        hash.update(privateKeyPassword.encode())
+
+        privateKeyPasswordB64Bytes = base64.urlsafe_b64encode(hash.digest())
+        privateKeyPasswordObject = Fernet(privateKeyPasswordB64Bytes)
+
+        return privateKeyPasswordObject
+
     def calculatePublicKey(self, privateKey: str = None):
         if not privateKey:
             privateKey = self.privateKey
@@ -58,9 +69,12 @@ class Wallet:
         savedEncryptedPrivateKey = json.load(savedPrivateKeyFile.encryptedPrivateKey)
         savedPrivateKeyFile.close()
 
-        privateKeyPasswordObject = Fernet(privateKeyPassword)
+        privateKeyPasswordObject = self.privateKeyPasswordToObject(privateKeyPassword)
+
         try:
-            privateKey = privateKeyPasswordObject.decrypt(savedEncryptedPrivateKey)
+            privateKey = privateKeyPasswordObject.decrypt(
+                savedEncryptedPrivateKey.encode()
+            )
         except InvalidToken:
             return "Token is malformed or does not have a valid signature"
         except TypeError:
@@ -74,9 +88,10 @@ class Wallet:
         if not privateKey:
             privateKey = self.privateKey
 
-        privateKeyPasswordObject = Fernet(privateKeyPassword)
+        privateKeyPasswordObject = self.privateKeyPasswordToObject(privateKeyPassword)
+
         try:
-            encryptedPrivateKey = privateKeyPasswordObject.encrypt(privateKey)
+            encryptedPrivateKey = privateKeyPasswordObject.encrypt(privateKey.encode())
         except TypeError:
             return "Incorrect data type"
 
