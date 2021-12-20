@@ -44,7 +44,7 @@ class BlockChain:
 
     def appendBlock(self, newBlock: object):
         blockDict = Block().toDict(newBlock)
-        if blockDict != True:
+        if type(blockDict) != dict:
             return blockDict
 
         self.chain.append(blockDict)
