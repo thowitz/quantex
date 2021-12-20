@@ -12,7 +12,13 @@ privateKeyPassword = "thanks for all the fish"
 
 blockchain = BlockChain.getInstance()
 wallet = Wallet.getInstance()
-wallet.readPrivateKey(privateKeyPassword)
+
+if wallet.checkExistingPrivateKey():
+    wallet.readPrivateKey(privateKeyPassword)
+else:
+    wallet.createPrivateKey()
+    wallet.savePrivateKey(privateKeyPassword)
+
 wallet.calculatePublicKey()
 node = Node.getInstance()
 
