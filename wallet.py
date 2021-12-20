@@ -56,7 +56,7 @@ class Wallet:
             privateKey = self.privateKey
 
         signingKey = SigningKey.from_string(
-            privateKey.encode(), curve=SECP256k1, hashfunc=sha3_256
+            bytearray.fromhex(privateKey), curve=SECP256k1, hashfunc=sha3_256
         )
         verifyingKey = signingKey.verifying_key
 
