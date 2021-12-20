@@ -35,10 +35,10 @@ class Node:
         for node in self.nodes:
             try:
                 prospectiveNodes = requests.get(
-                    f"http://{node}/nodes/current", timeout=5
+                    f"http://{node}/nodes/current", timeout=1
                 )
                 prospectiveTransactions = requests.get(
-                    f"http://{node}/transaction-pool/current", timeout=5
+                    f"http://{node}/transaction-pool/current", timeout=1
                 )
                 self.processProspectiveNodes(prospectiveNodes)
                 self.processProspectiveTransactions(prospectiveTransactions)
