@@ -5,6 +5,7 @@ from cryptography.fernet import Fernet, InvalidToken
 from transaction import Transaction
 import json
 import base64
+import os
 
 
 class Wallet:
@@ -63,6 +64,9 @@ class Wallet:
         self.publicKey = publicKey
 
         return self.publicKey
+
+    def checkExistingPrivateKey(self):
+        return os.path.isfile("private-key.json")
 
     def readPrivateKey(self, privateKeyPassword: str):
         savedPrivateKeyFile = open("private-key.json")
