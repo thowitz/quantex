@@ -31,26 +31,26 @@ class Node:
         self.nodes = nodes
 
         self.transactionPool = []
-        
-        possibleOfflineValidators = []
 
-        for validator in self.nodes:
+        possibleOfflineNodes = []
+
+        for validatorNode in self.nodes:
             try:
                 prospectiveNodes = requests.get(
-                    f"http://{validator}/nodes/current", timeout=1
+                    f"http://{validatorNode}/nodes/current", timeout=1
                 )
                 prospectiveTransactions = requests.get(
-                    f"http://{validator}/transaction-pool/current", timeout=1
+                    f"http://{validatorNode}/transaction-pool/current", timeout=1
                 )
                 self.processProspectiveNodes(prospectiveNodes)
                 self.processProspectiveTransactions(prospectiveTransactions)
             except:
-                possibleOfflineValidators.append(validator)
+                possibleOfflineNodes.append(validatorNode)
                 continue
-            
+
         # if every validator is offline, chances are we're in fact the ones offline
-        if possibleOfflineValidators and possibleOfflineValidators != self.nodes:
-            self.processPossibleOfflineValidators(possibleOfflineValidators)
+        if possibleOfflineNodes and possibleOfflineNodes != self.nodes:
+            self.processPossibleOfflineValidators(possibleOfflineNodes)
 
     def processProspectiveNodes(self, prospectiveNodes: list):
         # todo update before pos implementation
@@ -69,8 +69,8 @@ class Node:
             self.nodes.extend(newNodes)
             return True
         return False
-    
-    def processPossibleOfflineValidators(self, possibleOfflineValidators: list):
+
+    def processPossibleOfflineNodes(self, possibleOfflineNodes: list):
         # todo finish before pos implementation
         pass
 

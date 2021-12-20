@@ -72,13 +72,13 @@ class BlockChain:
     # replaces the current chain with the longest one to provide consensus of chain state
     def resolveConflicts(self):
         node = Node.getInstance()
-        possibleOfflineValidators = []
+        possibleOfflineNodes = []
 
-        for validator in node.nodes:
+        for validatorNode in node.nodes:
             try:
-                response = requests.get(f"http://{validator}/chain", timeout=1)
+                response = requests.get(f"http://{validatorNode}/chain", timeout=1)
             except:
-                possibleOfflineValidators.append(validator)
+                possibleOfflineNodes.append(validatorNode)
                 continue
 
             if response.status_code == 200:
@@ -97,8 +97,8 @@ class BlockChain:
                     return True
 
         # if every validator is offline, chances are we're in fact the ones offline
-        if possibleOfflineValidators and possibleOfflineValidators != node.nodes:
-            node.processPossibleOfflineValidators(possibleOfflineValidators)
+        if possibleOfflineNodes and possibleOfflineNodes != node.nodes:
+            node.processPossibleOfflineValidators(possibleOfflineNodes)
 
         return False
 
