@@ -8,7 +8,7 @@ from node import Node
 import json
 import requests
 
-privateKeyPassword = "thanks for all the fish"
+privateKeyPassword = input("Please enter your private key password: ")
 
 blockchain = BlockChain.getInstance()
 wallet = Wallet.getInstance()
