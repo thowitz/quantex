@@ -32,4 +32,5 @@ app = Flask(__name__)
 app.register_blueprint(views, url_prefix="/")
 
 if __name__ == "__main__":
+    # deepcode ignore RunWithDebugTrue: Temporary for testing
     app.run(debug=True, port=42069)
