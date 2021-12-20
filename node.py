@@ -34,6 +34,8 @@ class Node:
 
         possibleOfflineNodes = []
 
+        print("\nSyncing nodes and transaction pool...")
+
         for validatorNode in self.nodes:
             try:
                 prospectiveNodes = requests.get(
@@ -51,6 +53,8 @@ class Node:
         # if every validator is offline, chances are we're in fact the ones offline
         if possibleOfflineNodes and possibleOfflineNodes != self.nodes:
             self.processPossibleOfflineValidators(possibleOfflineNodes)
+
+        print("Done")
 
     def processProspectiveNodes(self, prospectiveNodes: list):
         # todo update before pos implementation
