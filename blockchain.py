@@ -33,7 +33,9 @@ class BlockChain:
         self.chain = []
 
     def createGenesis(self):
-        self.appendBlock(self.config["genesisBlock"]["blockData"])
+        genesisBlockObject = Block()
+        genesisBlockObject.fromDict(self.config["genesisBlock"]["blockData"])
+        self.appendBlock(genesisBlockObject)
 
     @property
     def lastBlock(self):
@@ -73,9 +75,10 @@ class BlockChain:
 
         for node in node.nodes:
             try:
-                response = requests.get(f"http://{node}/chain")
-            except requests.exceptions.RequestException as error:
-                return error
+                print("Waiting for response")
+                response = requests.get(f"http://{node}/chain", timeout=1)
+            except:
+                break
 
             if response.status_code == 200:
                 prospectiveNewChain = response.json()
