@@ -3,7 +3,11 @@ Explanations:
 Block syntax:
 
 {
-
+"index": int,
+"previousBlockHash": string,
+"transactionList": list,
+"timstamp": int,
+"proofNumber": int,
 }
 
 Creating a transaction (pretty much just what the wallet transfer coins method does):
@@ -46,3 +50,5 @@ Adding your transaction to the blockchain:
 You make a request to the transaction-pool/new endpoint of all the nodes, passing in a list of your prospective transactions
 
 For each transaction, the blockchain validates the data types for every value and if the signature is valid
+
+The transactions are then converted to dicts
