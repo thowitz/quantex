@@ -28,6 +28,9 @@ else:
 
 wallet.calculatePublicKey()
 node = Node.getInstance()
+syncResult = node.syncNodesAndTransactionPool()
+if syncResult == "Offline":
+    print("\nThe network is unreachable, this probably means you're offline")
 
 print("\nLoading saved chain file...")
 savedChainFile = open("chain.json")

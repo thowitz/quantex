@@ -22,62 +22,60 @@ class Node:
             )
 
         nodes = []
+
         savedNodesFile = open("nodes.txt")
         for node in savedNodesFile.readlines():
             nodes.append(node.strip())
-
         savedNodesFile.close()
 
         self.nodes = nodes
-
         self.transactionPool = []
 
-        possibleOfflineNodes = []
-
+    def syncNodesAndTransactionPool(self):
         print("\nSyncing nodes and transaction pool...")
-        
+
         currentNodesResponses = self.makeNetworkRequest("/nodes/current")
-        currentTransactionPoolResponses = self.makeNetworkRequest("/transaction-pool/current")
-        
+        currentTransactionPoolResponses = self.makeNetworkRequest(
+            "/transaction-pool/current"
+        )
+
         if currentNodesResponses and type(currentNodesResponses) != str:
             for currentNodesResponse in currentNodesResponses:
                 self.processProspectiveNodes(currentNodesResponse.content)
         else:
             return currentNodesResponses
-        
-        if currentTransactionPoolResponses and type(currentTransactionPoolResponses) != str:
+
+        if (
+            currentTransactionPoolResponses
+            and type(currentTransactionPoolResponses) != str
+        ):
             for currentTransactionPoolResponse in currentTransactionPoolResponses:
                 self.processProspectiveTransactions(currentTransactionPoolResponse)
         else:
             return currentTransactionPoolResponses
 
         print("Done")
-        
-    
-        
+
     def makeNetworkRequest(self, path):
         possibleOfflineNodes = []
         responses = []
-        
+
         if path[0] == "/":
             path = path[1:]
-        
+
         for validatorNode in self.nodes:
             try:
-                response = requests.get(
-                    f"http://{validatorNode}/{path}", timeout=1
-                )
+                response = requests.get(f"http://{validatorNode}/{path}", timeout=1)
                 responses.append(response)
             except:
                 possibleOfflineNodes.append(validatorNode)
                 continue
-                                        
+
         if possibleOfflineNodes and possibleOfflineNodes != self.nodes:
             self.processPossibleOfflineValidators(possibleOfflineNodes)
             return "Offline"
-        
-        return responses
 
+        return responses
 
     def processProspectiveNodes(self, prospectiveNodes: list):
         # todo update before pos implementation
