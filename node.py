@@ -35,26 +35,49 @@ class Node:
         possibleOfflineNodes = []
 
         print("\nSyncing nodes and transaction pool...")
+        
+        currentNodesResponses = self.makeNetworkRequest("/nodes/current")
+        currentTransactionPoolResponses = self.makeNetworkRequest("/transaction-pool/current")
+        
+        if currentNodesResponses and type(currentNodesResponses) != str:
+            for currentNodesResponse in currentNodesResponses:
+                self.processProspectiveNodes(currentNodesResponse.content)
+        else:
+            return currentNodesResponses
+        
+        if currentTransactionPoolResponses and type(currentTransactionPoolResponses) != str:
+            for currentTransactionPoolResponse in currentTransactionPoolResponses:
+                self.processProspectiveTransactions(currentTransactionPoolResponse)
+        else:
+            return currentTransactionPoolResponses
 
+        print("Done")
+        
+    
+        
+    def makeNetworkRequest(self, path):
+        possibleOfflineNodes = []
+        responses = []
+        
+        if path[0] == "/":
+            path = path[1:]
+        
         for validatorNode in self.nodes:
             try:
-                prospectiveNodes = requests.get(
-                    f"http://{validatorNode}/nodes/current", timeout=1
+                response = requests.get(
+                    f"http://{validatorNode}/{path}", timeout=1
                 )
-                prospectiveTransactions = requests.get(
-                    f"http://{validatorNode}/transaction-pool/current", timeout=1
-                )
-                self.processProspectiveNodes(prospectiveNodes)
-                self.processProspectiveTransactions(prospectiveTransactions)
+                responses.append(response)
             except:
                 possibleOfflineNodes.append(validatorNode)
                 continue
-
-        # if every validator is offline, chances are we're in fact the ones offline
+                                        
         if possibleOfflineNodes and possibleOfflineNodes != self.nodes:
             self.processPossibleOfflineValidators(possibleOfflineNodes)
+            return "Offline"
+        
+        return responses
 
-        print("Done")
 
     def processProspectiveNodes(self, prospectiveNodes: list):
         # todo update before pos implementation
