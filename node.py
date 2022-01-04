@@ -73,6 +73,7 @@ class Node:
 
         if possibleOfflineNodes and possibleOfflineNodes != self.nodes:
             self.processPossibleOfflineValidators(possibleOfflineNodes)
+        elif possibleOfflineNodes and possibleOfflineNodes == self.nodes:
             return "Offline"
 
         return responses
