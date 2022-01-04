@@ -69,21 +69,16 @@ class BlockChain:
 
         return True
 
-    # replaces the current chain with the longest one to provide consensus of chain state
+    # replaces the current chain with the longest valid one to provide consensus of chain state
     def resolveConflicts(self):
         node = Node.getInstance()
-        possibleOfflineNodes = []
 
-        for validatorNode in node.nodes:
-            try:
-                response = requests.get(f"http://{validatorNode}/chain", timeout=1)
-            except:
-                possibleOfflineNodes.append(validatorNode)
-                continue
-
-            if response.status_code == 200:
-                prospectiveNewChain = response.json()
-
+        chainResponses = node.makeNetworkRequest("/chain")
+        
+        if chainResponses and type(chainResponses) != str:
+            for chainResponse in chainResponses:
+                prospectiveNewChain = chainResponse.json()
+                
                 if (
                     len(prospectiveNewChain) > len(self.chain)
                     and self.validateChain(prospectiveNewChain) == True
@@ -95,10 +90,6 @@ class BlockChain:
                     savedChainFile.close()
 
                     return True
-
-        # if every validator is offline, chances are we're in fact the ones offline
-        if possibleOfflineNodes and possibleOfflineNodes != node.nodes:
-            node.processPossibleOfflineValidators(possibleOfflineNodes)
 
         return False
 
