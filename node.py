@@ -32,8 +32,6 @@ class Node:
         self.transactionPool = []
 
     def syncNodesAndTransactionPool(self):
-        print("\nSyncing nodes and transaction pool...")
-
         currentNodesResponses = self.makeNetworkRequest("/nodes/current")
         currentTransactionPoolResponses = self.makeNetworkRequest(
             "/transaction-pool/current"
@@ -54,8 +52,6 @@ class Node:
         else:
             return currentTransactionPoolResponses
 
-        print("Done")
-
     def makeNetworkRequest(self, path):
         possibleOfflineNodes = []
         responses = []
@@ -63,18 +59,28 @@ class Node:
         if path[0] == "/":
             path = path[1:]
 
+        print(f"Making request to network at /{path}")
+
         for validatorNode in self.nodes:
             try:
                 response = requests.get(f"http://{validatorNode}/{path}", timeout=1)
                 responses.append(response)
             except:
                 possibleOfflineNodes.append(validatorNode)
-                continue
 
-        if possibleOfflineNodes and possibleOfflineNodes != self.nodes:
-            self.processPossibleOfflineValidators(possibleOfflineNodes)
-        elif possibleOfflineNodes and possibleOfflineNodes == self.nodes:
-            return "Offline"
+            if len(possibleOfflineNodes) > 1:
+                print(
+                    f"\r{len(possibleOfflineNodes)} out of {len(self.nodes)} nodes unavailable",
+                    end="",
+                )
+
+        if possibleOfflineNodes:
+            print("")
+            if possibleOfflineNodes != self.nodes:
+                self.processPossibleOfflineValidators(possibleOfflineNodes)
+            # if every validator is offline, chances are we're in fact the ones offline
+            elif possibleOfflineNodes and possibleOfflineNodes == self.nodes:
+                return "Offline"
 
         return responses
 
