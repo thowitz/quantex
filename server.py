@@ -28,20 +28,27 @@ else:
 
 wallet.calculatePublicKey()
 node = Node.getInstance()
+print("\nSyncing nodes and transaction pool...")
 syncResult = node.syncNodesAndTransactionPool()
 if syncResult == "Offline":
-    print("\nThe network is unreachable, this probably means you're offline")
+    print("The network is unreachable, this probably means you're offline")
+else:
+    print("Done")
 
 print("\nLoading saved chain file...")
-savedChainFile = open("chain.json")
-savedChain = json.load(savedChainFile)
-savedChainFile.close()
-print("Done")
+try:
+    savedChainFile = open("chain.json")
+    savedChain = json.load(savedChainFile)
+    savedChainFile.close()
+    print("Done")
+except:
+    print("Unable to load saved chain file")
+    savedChain = None
 
 if savedChain:
     blockchain.chain = savedChain
 elif not savedChain:
-    print("\nCreating genesis block due to empty saved chain...")
+    print("\nCreating genesis block due to lack of or empty saved chain...")
     blockchain.createGenesis()
     print("Done")
 
