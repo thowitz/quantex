@@ -81,10 +81,19 @@ class Transaction:
         return True
 
     def validateTransactions(self, transactionList: list):
+        blockRewardIncluded = False
+        
         for signedTransaction in transactionList:
             transactionTypesResult = self.validateTypes(signedTransaction.transaction)
             if transactionTypesResult != True:
                 return transactionTypesResult
+            
+            if signedTransaction.transaction.senderPublicKey == "blockReward":
+                if blockRewardIncluded == False:
+                    blockRewardIncluded = True
+                    continue
+                elif blockRewardIncluded == True:
+                    return "2 or more blockReward transactions"
 
             verifyingKey = VerifyingKey.from_string(
                 signedTransaction.transaction.senderPublicKey
