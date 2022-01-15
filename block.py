@@ -35,7 +35,7 @@ class Block:
         hash.update(guess)
         attempt = hash.hexdigest()
 
-        return attempt[:4] == "0000"
+        return attempt[:2] == "00"
 
     def fromDict(self, blockDict: dict):
         # verify enough of the data points exist in the dict
