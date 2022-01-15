@@ -5,7 +5,7 @@ Block syntax:
 "index": int,
 "previousBlockHash": string,
 "transactionList": list,
-"timstamp": int,
+"timestamp": int,
 "proofNumber": int,
 }
 

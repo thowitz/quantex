@@ -92,7 +92,7 @@ class Block:
             "index": blockObject.index,
             "previousBlockHash": blockObject.previousBlockHash,
             "transactionList": blockObject.transactionList,
-            "timstamp": blockObject.timestamp,
+            "timestamp": blockObject.timestamp,
             "proofNumber": blockObject.proofNumber,
         }
 
