@@ -102,14 +102,14 @@ class BlockChain:
             if blockFromDictResult != True:
                 return blockFromDictResult
 
-            previousBlock = Block()
-            previousBlockFromDictResult = previousBlock.fromDict(
-                self.chain[block.index - 1]
-            )
-            if previousBlockFromDictResult != True:
-                return previousBlockFromDictResult
-
             if block.index != 0:
+                previousBlock = Block()
+                previousBlockFromDictResult = previousBlock.fromDict(
+                    self.chain[block.index - 1]
+                )
+                if previousBlockFromDictResult != True:
+                    return previousBlockFromDictResult
+
                 validateBlockResult = Block.validateBlocks(block, previousBlock)
                 if validateBlockResult != True:
                     return validateBlockResult
@@ -121,7 +121,7 @@ class BlockChain:
                     return validateTransactionsResult
 
             else:
-                if block.blockHash != self.config["genesisBlock"]["blockData"]:
+                if block.blockHash != self.config["genesisBlock"]["hash"]:
                     return False
 
         return True
