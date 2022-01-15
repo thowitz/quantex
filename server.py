@@ -56,6 +56,8 @@ print("\nResolving chain conflicts...")
 blockchain.resolveConflicts()
 print("Done\n")
 
+blockchain.mine(blockchain.lastBlock.proofNumber)
+
 from views import views
 
 app = Flask(__name__)
