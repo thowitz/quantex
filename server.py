@@ -63,4 +63,4 @@ app.register_blueprint(views, url_prefix="/")
 
 if __name__ == "__main__":
     # deepcode ignore RunWithDebugTrue: Temporary for testing
-    app.run(debug=True, port=42069)
+    app.run(debug=False, port=42069)
