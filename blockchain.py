@@ -39,7 +39,8 @@ class BlockChain:
 
     @property
     def lastBlock(self):
-        lastBlock = Block().fromDict(self.chain[-1])
+        lastBlock = Block()
+        lastBlock.fromDict(self.chain[-1])
         return lastBlock
 
     def appendBlock(self, newBlock: object):
@@ -74,11 +75,11 @@ class BlockChain:
         node = Node.getInstance()
 
         chainResponses = node.makeNetworkRequest("/chain")
-        
+
         if chainResponses and type(chainResponses) != str:
             for chainResponse in chainResponses:
                 prospectiveNewChain = chainResponse.json()
-                
+
                 if (
                     len(prospectiveNewChain) > len(self.chain)
                     and self.validateChain(prospectiveNewChain) == True
@@ -130,8 +131,12 @@ class BlockChain:
         proofNumber = 0
 
         while True:
-            print(f"⛏️ mining proof {proofNumber}...")
+            print(
+                f"\r⛏️ Mining proof {proofNumber}...",
+                end="",
+            )
             if Block.verifyProof(proofNumber, previousProofNumber):
+                print(f"\r⛏️ Proof found {proofNumber}\n")
                 return proofNumber
             else:
                 proofNumber += 1
