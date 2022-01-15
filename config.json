@@ -4,7 +4,13 @@
     "blockData": {
       "index": 0,
       "previousBlockHash": "",
-      "transactionList": [],
+      "transactionList": [
+        {
+          "amount": 100,
+          "senderPublicKey": "blockReward",
+          "recipientPublicKey": "03e278af2e41aaf2a255958adc60d4edb41fc9f1dd1c3fc902980202ebb5cd6ea7"
+        }
+      ],
       "timestamp": 42,
       "proofNumber": 0
     }
