@@ -111,7 +111,7 @@ class Node:
     # maybe I'll change it after I've checked off some more things on the to do list
     def processProspectiveTransactions(self, prospectiveTransactions: list):
         validateTransactionsResult = Transaction.validateTransactions(
-            prospectiveTransactions
+            prospectiveTransactions, blockRewardAllowed=False
         )
 
         if validateTransactionsResult != True:
