@@ -60,7 +60,7 @@ class Transaction:
         validateTypesResult = self.validateTypes(unsignedTransactionObject)
         if validateTypesResult != True:
             return validateTypesResult
-        
+
         self.unsignedTransactionDict = {
             "amount": unsignedTransactionObject.amount,
             "senderPublicKey": unsignedTransactionObject.senderPublicKey,
@@ -80,20 +80,25 @@ class Transaction:
 
         return True
 
-    def validateTransactions(self, transactionList: list):
+    def validateTransactions(
+        self, transactionList: list, blockRewardAllowed: bool = True
+    ):
         blockRewardIncluded = False
-        
+
         for signedTransaction in transactionList:
             transactionTypesResult = self.validateTypes(signedTransaction.transaction)
             if transactionTypesResult != True:
                 return transactionTypesResult
-            
+
             if signedTransaction.transaction.senderPublicKey == "blockReward":
-                if blockRewardIncluded == False:
-                    blockRewardIncluded = True
-                    continue
-                elif blockRewardIncluded == True:
-                    return "2 or more blockReward transactions"
+                if blockRewardAllowed:
+                    if blockRewardIncluded == False:
+                        blockRewardIncluded = True
+                        continue
+                    elif blockRewardIncluded == True:
+                        return "2 or more blockReward transactions"
+                elif not blockRewardAllowed:
+                    return "blockReward transaction present"
 
             verifyingKey = VerifyingKey.from_string(
                 signedTransaction.transaction.senderPublicKey
