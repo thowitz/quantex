@@ -1,3 +1,4 @@
+import string
 from flask import Flask
 from blockchain import BlockChain
 from block import Block
@@ -35,20 +36,17 @@ if syncResult == "Offline":
 else:
     print("Done")
 
-print("\nLoading saved chain file...")
-try:
-    savedChainFile = open("chain.json")
-    savedChain = json.load(savedChainFile)
-    savedChainFile.close()
-    print("Done")
-except:
-    print("Unable to load saved chain file")
+savedChainData = blockchain.openFile("chain.json", True)
+if type(savedChainData) != string:
+    savedChain = savedChainData
+else:
+    print(savedChainData)
     savedChain = None
 
 if savedChain:
     blockchain.chain = savedChain
 elif not savedChain:
-    print("\nCreating genesis block due to lack of or empty saved chain...")
+    print("Creating genesis block due to lack of or empty saved chain...")
     blockchain.createGenesis()
     print("Done")
 
