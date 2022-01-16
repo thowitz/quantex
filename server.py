@@ -57,6 +57,10 @@ elif not savedChain:
     blockchain.createGenesis()
     print("Done")
 
+print("\nValidating chain...")
+blockchain.validateChain()
+print("Done")
+
 print("\nResolving chain conflicts...")
 blockchain.resolveConflicts()
 print("Done\n")
