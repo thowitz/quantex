@@ -1,11 +1,11 @@
-import string
 from flask import Flask
 from blockchain import BlockChain
 from block import Block
 from transaction import Transaction
 from wallet import Wallet
 from node import Node
-import json
+from usefulFunctions import openFile
+import sys
 import requests
 
 privateKeyPassword = input("Please enter your private key password: ")
@@ -13,19 +13,26 @@ privateKeyPassword = input("Please enter your private key password: ")
 blockchain = BlockChain.getInstance()
 wallet = Wallet.getInstance()
 
-if wallet.checkExistingPrivateKey():
-    print("\nFound saved private key")
-    print("Reading private key...")
-    wallet.readPrivateKey(privateKeyPassword)
-    print("Done")
-else:
-    print("\nNo saved private key found")
+savedPrivateKeyData = openFile("private-key.json", True)
+# we only want to create and save a private key if the file does not exist, otherwise we could be overwriting an existing one
+if savedPrivateKeyData == "No saved file found":
     print("Creating private key...")
     wallet.createPrivateKey()
     print("Done")
     print("Saving private key...")
     wallet.savePrivateKey(privateKeyPassword)
     print("Done")
+elif type(savedPrivateKeyData) != str:
+    savedEncryptedPrivateKey = savedPrivateKeyData["encryptedPrivateKey"]
+    decryptionResult = wallet.decryptPrivateKey(
+        savedEncryptedPrivateKey, privateKeyPassword
+    )
+    if decryptionResult == str:
+        print(decryptionResult)
+        sys.exit()
+else:
+    print(savedPrivateKeyData)
+    sys.exit()
 
 wallet.calculatePublicKey()
 node = Node.getInstance()
@@ -37,7 +44,7 @@ else:
     print("Done")
 
 savedChainData = blockchain.openFile("chain.json", True)
-if type(savedChainData) != string:
+if type(savedChainData) != str:
     savedChain = savedChainData
 else:
     print(savedChainData)
