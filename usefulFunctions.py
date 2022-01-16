@@ -7,15 +7,16 @@ def openFile(file: str, returnJson: bool = False, mode: str = "r"):
     dotIndex = file.find(".")
     if dotIndex == -1:
         return "Please provide the filename with its extension"
-    fileHrName = file[0, dotIndex]
+    fileHrName = file[0:dotIndex]
+    print(f"\nLooking for saved {fileHrName} file...")
 
     if os.path.isfile(file):
-        print(f"\nFound saved {fileHrName} file")
+        print(f"Found saved {fileHrName} file")
         print(f"Opening {fileHrName}...")
         try:
             savedFile = open(file, mode)
             if returnJson:
-                if file[-4, -1] == "json":
+                if file[dotIndex:] == ".json":
                     returnData = json.load(savedFile)
                 else:
                     savedFile.close()
