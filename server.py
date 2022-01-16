@@ -43,7 +43,7 @@ if syncResult == "Offline":
 else:
     print("Done")
 
-savedChainData = blockchain.openFile("chain.json", True)
+savedChainData = openFile("chain.json", True)
 if type(savedChainData) != str:
     savedChain = savedChainData
 else:
