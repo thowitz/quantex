@@ -65,15 +65,7 @@ class Wallet:
 
         return self.publicKey
 
-    def checkExistingPrivateKey(self):
-        return os.path.isfile("private-key.json")
-
-    def readPrivateKey(self, privateKeyPassword: str):
-        savedPrivateKeyFile = open("private-key.json")
-        privateKeyJson = json.load(savedPrivateKeyFile)
-        savedEncryptedPrivateKey = privateKeyJson["encryptedPrivateKey"]
-        savedPrivateKeyFile.close()
-
+    def decryptPrivateKey(self, savedEncryptedPrivateKey: str, privateKeyPassword: str):
         privateKeyPasswordObject = self.privateKeyPasswordToObject(privateKeyPassword)
 
         try:
@@ -87,7 +79,7 @@ class Wallet:
 
         self.privateKey = privateKey.decode()
 
-        return self.privateKey
+        return True
 
     def savePrivateKey(self, privateKeyPassword: str, privateKey: str = None):
         if not privateKey:
