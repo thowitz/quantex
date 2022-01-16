@@ -129,7 +129,10 @@ class Block:
         elif block.index <= previousBlock.index:
             return "Incorrect index"
 
-        elif block.timestamp <= previousBlock.timestamp:
+        elif (
+            block.timestamp <= previousBlock.timestamp
+            or block.timestamp >= previousBlock.timestamp + 300
+        ):
             return "Incorrect timestamp"
 
         return True
