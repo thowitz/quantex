@@ -3,7 +3,7 @@ Explanations:
 Block syntax:
 {
 "index": int,
-"previousBlockHash": string,
+"previousBlockHash": str,
 "transactionList": list,
 "timestamp": int,
 "proofNumber": int,
