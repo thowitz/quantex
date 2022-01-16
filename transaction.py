@@ -93,6 +93,9 @@ class Transaction:
             if signedTransaction.transaction.senderPublicKey == "blockReward":
                 if blockRewardAllowed:
                     if blockRewardIncluded == False:
+                        # temporary, this limit will be dynamic in the future
+                        if signedTransaction.transaction.amount > 50:
+                            return "Block reward transaction amount too large"
                         blockRewardIncluded = True
                         continue
                     elif blockRewardIncluded == True:
