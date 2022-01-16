@@ -4,6 +4,8 @@ from wallet import Wallet
 from node import Node
 import requests
 import json
+from usefulFunctions import openFile
+import sys
 
 
 class BlockChain:
@@ -26,9 +28,11 @@ class BlockChain:
                 f"{self.__class__.__name__} is a singleton, use the getInstance class method."
             )
 
-        configFile = open("config.json")
-        self.config = json.load(configFile)
-        configFile.close()
+        configFile = openFile("config.json", True)
+        if type(configFile) == str:
+            print(f"{configFile}, please fix or redownload the config.json file")
+            sys.exit()
+        self.config = configFile
 
         self.chain = []
 

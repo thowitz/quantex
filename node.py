@@ -95,7 +95,7 @@ class Node:
 
         savedNodesFile = openFile("nodes.txt", mode="a")
         if type(savedNodesFile) == str:
-            print(f"{savedNodesFile}, please redownload the nodes.txt file")
+            print(f"{savedNodesFile}, please fix or redownload the nodes.txt file")
             sys.exit()
 
         for node in prospectiveNodes:
