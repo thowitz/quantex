@@ -1,5 +1,7 @@
 import requests
 from transaction import Transaction
+from usefulFunctions import openFile
+import sys
 
 
 class Node:
@@ -23,7 +25,10 @@ class Node:
 
         nodes = []
 
-        savedNodesFile = open("nodes.txt")
+        savedNodesFile = openFile("nodes.txt")
+        if type(savedNodesFile) == str:
+            print(f"{savedNodesFile}, please redownload the nodes.txt file")
+            sys.exit()
         for node in savedNodesFile.readlines():
             nodes.append(node.strip())
         savedNodesFile.close()
@@ -88,12 +93,15 @@ class Node:
         # todo update before pos implementation
         newNodes = []
 
-        savedNodesFile = open("nodes.txt", "a")
+        savedNodesFile = openFile("nodes.txt", mode="a")
+        if type(savedNodesFile) == str:
+            print(f"{savedNodesFile}, please redownload the nodes.txt file")
+            sys.exit()
 
         for node in prospectiveNodes:
             if not node in self.nodes:
                 newNodes.append(node)
-                savedNodesFile.write(f"{node}/n")
+                savedNodesFile.write(f"{node}\n")
 
         savedNodesFile.close()
 
