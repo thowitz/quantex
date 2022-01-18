@@ -6,7 +6,7 @@ from start import start
 from server import startServer
 
 parser = argparse.ArgumentParser(description="A simple quantex mining cli")
-# parser.usage("quantex [-h] [command]")
+parser.usage = "quantex [-h] [command]"
 parser.add_argument("command")
 args = parser.parse_args()
 
