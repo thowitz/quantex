@@ -1,22 +1,21 @@
 #!/usr/bin/env python3
 
-import argparse
+import click
 from blockchain import BlockChain
-from start import start
+from start import start as startProgram
 from server import startServer
 
-parser = argparse.ArgumentParser(description="A simple quantex mining cli")
-parser.usage = "quantex [-h] [command]"
-parser.add_argument("command")
-args = parser.parse_args()
 
-if args.command == "start":
-    start()
+@click.group()
+def main():
+    click.echo("Starting")
+
+
+@main.command()
+def start():
+    startProgram()
     print("Starting server now...\n")
     startServer()
-elif args.command == "mine":
-    if BlockChain._instance != None:
-        blockchain = BlockChain.getInstance()
-        blockchain.mine(blockchain.lastBlock.proofNumber)
-    else:
-        print("Please run the program start command before mining")
+
+
+main()
