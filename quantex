@@ -7,6 +7,7 @@ from start import start as startProgram
 from server import startServer
 import sys
 import os
+from usefulFunctions import openFile
 
 
 @click.group()
@@ -22,10 +23,13 @@ def start():
 
 
 @main.command()
-@click.argument("create", required=False)
-def wallet(create):
+@click.option("--create", is_flag=True)
+@click.option("--print-keys", is_flag=True)
+def wallet(create, print_keys):
     if create:
         createWallet()
+    elif print_keys:
+        decryptAndPrintKeys()
 
 
 def createWallet():
@@ -45,6 +49,30 @@ def createWallet():
         print("Done")
     else:
         click.echo("\nA wallet already exists, the program will now exit")
+        sys.exit()
+
+
+def decryptAndPrintKeys():
+    privateKeyPassword = input("Please enter your private key password: ")
+
+    wallet = Wallet.getInstance()
+
+    savedPrivateKeyData = openFile("private-key.json", True)
+    if type(savedPrivateKeyData) != str:
+        savedEncryptedPrivateKey = savedPrivateKeyData["encryptedPrivateKey"]
+        decryptionResult = wallet.decryptPrivateKey(
+            savedEncryptedPrivateKey, privateKeyPassword
+        )
+        if decryptionResult != str:
+            print("\nPrivate key:")
+            print(wallet.privateKey)
+            print("\nPublic key:")
+            print(wallet.calculatePublicKey())
+        else:
+            print(decryptionResult)
+            sys.exit()
+    else:
+        print(savedPrivateKeyData)
         sys.exit()
 
 
