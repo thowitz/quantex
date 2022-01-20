@@ -26,6 +26,9 @@ def start():
 @click.option("--create", is_flag=True)
 @click.option("--print-keys", is_flag=True)
 def wallet(create, print_keys):
+    if create and print_keys:
+        print("Please enter one flag")
+        sys.exit()
     if create:
         createWallet()
     elif print_keys:
