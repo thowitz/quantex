@@ -57,7 +57,12 @@ class Node:
         else:
             return currentTransactionPoolResponses
 
-    def makeNetworkRequest(self, path):
+    def makeNetworkRequest(self, path, requestType="get", data=None):
+        if requestType != "get" and requestType != "post":
+            return "Incorrect request type"
+        if requestType != "post" and data:
+            return "Do not pass data if request type isn't post"
+
         possibleOfflineNodes = []
         responses = []
 
@@ -68,12 +73,17 @@ class Node:
 
         for validatorNode in self.nodes:
             try:
-                response = requests.get(f"http://{validatorNode}/{path}", timeout=1)
+                if requestType == "get":
+                    response = requests.get(f"http://{validatorNode}/{path}", timeout=1)
+                elif requestType == "post":
+                    response = requests.post(
+                        f"http://{validatorNode}/{path}", data, timeout=1
+                    )
                 responses.append(response)
             except:
                 possibleOfflineNodes.append(validatorNode)
 
-            if len(possibleOfflineNodes) > 1:
+            if len(possibleOfflineNodes) > 0:
                 print(
                     f"\r{len(possibleOfflineNodes)} out of {len(self.nodes)} nodes unavailable",
                     end="",
