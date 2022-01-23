@@ -11,9 +11,7 @@ from server import startServer
 import sys
 import os
 from usefulFunctions import openFile
-import threading
-import time
-import math
+from mine import startMining
 
 
 @click.group()
@@ -24,11 +22,9 @@ def main():
 @main.command()
 def start():
     startProgram()
-    global blockchain
     blockchain = BlockChain.getInstance()
-    global node
     node = Node.getInstance()
-    startMining()
+    startMining(blockchain, node)
     startServer()
 
 
@@ -43,27 +39,6 @@ def wallet(create, print_keys):
         createWallet()
     elif print_keys:
         decryptAndPrintKeys()
-
-
-def startMining():
-    miningThread = threading.Thread(target=mine)
-    miningThread.start()
-
-
-def mine():
-    proofNumber = blockchain.mine(blockchain.lastBlock.proofNumber)
-    lastBlock = blockchain.lastBlock()
-    newBlockDict = {
-        "index": lastBlock.index + 1,
-        "previousBlockHash": lastBlock.blockHash,
-        "transactionList": node.transactionPool,
-        "timestamp": math.round(time.time()),
-        "proofNumber": proofNumber,
-    }
-    newBlock = Block()
-    newBlock.fromDict(newBlockDict)
-    
-    node.makeNetworkRequest("/block/new")
 
 
 def createWallet():
