@@ -6,6 +6,7 @@ import requests
 import json
 from usefulFunctions import openFile
 import sys
+from mine import startMining
 
 
 class BlockChain:
@@ -35,6 +36,7 @@ class BlockChain:
         self.config = configFile
 
         self.chain = []
+        self.miningThread = None
 
     def createGenesis(self):
         genesisBlockObject = Block()
@@ -68,7 +70,12 @@ class BlockChain:
         if validateTransactionsResult != True:
             return validateTransactionsResult
 
+        if self.miningThread and self.miningThread.is_alive():
+            self.miningThread.terminate()
+
         self.appendBlock(prospectiveNewBlock)
+
+        startMining(self.getInstance(), Node.getInstance())
 
         # todo notify other validators
 
